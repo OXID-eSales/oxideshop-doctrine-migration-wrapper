@@ -1,0 +1,61 @@
+#!/bin/bash
+
+[ -z $ESHOP_FACTS ] && echo "Please run this script through oe-eshop-facts, e.g. ./oe-eshop-facts $0" && exit 1
+. $ESHOP_FACT_BIN_PATH
+. $ESHOP_VENDOR_BIN_PATH/oe-eshop-doctrine_migration_facts
+
+function main {
+    local CE_CONFIG_PATH="$ESHOP_DOCTRINE_CE_MIGRATION_CONFIG_PATH"
+    local CE_DB_CONFIG_PATH="$ESHOP_DOCTRINE_CE_MIGRATION_DB_CONFIG_PATH"
+    local CE_HAS="$ESHOP_DOCTRINE_CE_HAS_MIGRATIONS"
+
+    local PE_CONFIG_PATH="$ESHOP_DOCTRINE_PE_MIGRATION_CONFIG_PATH"
+    local PE_DB_CONFIG_PATH="$ESHOP_DOCTRINE_PE_MIGRATION_DB_CONFIG_PATH"
+    local PE_HAS="$ESHOP_DOCTRINE_PE_HAS_MIGRATIONS"
+
+    local EE_CONFIG_PATH="$ESHOP_DOCTRINE_EE_MIGRATION_CONFIG_PATH"
+    local EE_DB_CONFIG_PATH="$ESHOP_DOCTRINE_EE_MIGRATION_DB_CONFIG_PATH"
+    local EE_HAS="$ESHOP_DOCTRINE_EE_HAS_MIGRATIONS"
+
+    local PR_CONFIG_PATH="$ESHOP_DOCTRINE_PROJECT_MIGRATION_CONFIG_PATH"
+    local PR_DB_CONFIG_PATH="$ESHOP_DOCTRINE_PROJECT_MIGRATION_DB_CONFIG_PATH"
+    local PR_HAS="$ESHOP_DOCTRINE_PROJECT_HAS_MIGRATIONS"
+
+    local EDITION="$ESHOP_EDITION"
+    local ARGS="$@"
+
+    if [ -z "$MIGRATION_SUITE" ] ; then
+        local EXEC_CE=$([ $CE_HAS ] && echo "1")
+        local EXEC_PE=$([ $PE_HAS ] && ([ $EDITION == "PE" ] || [ $EDITION == "EE" ]) && echo "1")
+        local EXEC_EE=$([ $EE_HAS ] && [ $EDITION == "EE" ] && echo "1")
+        local EXEC_PR=$([ $PR_HAS ] && echo "1")
+    else
+        local EXEC_CE=$([ "$MIGRATION_SUITE" == "CE" ] && echo "1")
+        local EXEC_PE=$([ "$MIGRATION_SUITE" == "PE" ] && echo "1")
+        local EXEC_EE=$([ "$MIGRATION_SUITE" == "EE" ] && echo "1")
+        local EXEC_PR=$([ "$MIGRATION_SUITE" == "PR" ] && echo "1")
+    fi
+
+    [ "$EXEC_CE" ] && execute_doctrine_migrations "$CE_CONFIG_PATH" "$CE_DB_CONFIG_PATH" "$ARGS"
+    [ "$EXEC_PE" ] && execute_doctrine_migrations "$PE_CONFIG_PATH" "$PE_DB_CONFIG_PATH" "$ARGS"
+    [ "$EXEC_EE" ] && execute_doctrine_migrations "$EE_CONFIG_PATH" "$EE_DB_CONFIG_PATH" "$ARGS"
+    [ "$EXEC_PR" ] && execute_doctrine_migrations "$PR_CONFIG_PATH" "$PR_DB_CONFIG_PATH" "$ARGS"
+}
+
+function execute_doctrine_migrations {
+    local CONFIG_PATH="$1"
+    local DB_CONFIG_PATH="$2"
+    shift 2
+
+    local BIN="$ESHOP_DOCTRINE_MIGRATION_BIN_PATH"
+    local CMD="$BIN \"--ansi\" $@ --configuration=\"$CONFIG_PATH\" --db-configuration=\"$DB_CONFIG_PATH\""
+
+    [ ! -f "$CONFIG_PATH" ] && echo "Configuration file: \"$CONFIG_PATH\" was not found." && exit 1
+    [ ! -f "$DB_CONFIG_PATH" ] && echo "Database configuration file: \"$DB_CONFIG_PATH\" was not found." && exit 1
+
+    [ ! -z "$VERBOSE" ] && echo "CMD: $CMD"
+
+    eval $CMD
+}
+
+main "$@"
