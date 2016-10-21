@@ -12,7 +12,7 @@ if (!(file_exists($configFileName) && !is_dir($configFileName))) {
     die($message);
 }
 
-$configFile = new \OxidEsales\Eshop\Core\ConfigFile($configFileName);
+$configFile = new \OxidEsales\EshopCommunity\Core\ConfigFile($configFileName);
 
 $connectionParams = array(
     'dbname' => $configFile->dbName,
