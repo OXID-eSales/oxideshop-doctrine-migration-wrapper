@@ -1,20 +1,18 @@
 <?php
 
-$bootstrapFileName = realpath(trim(getenv('ESHOP_BOOTSTRAP_PATH')));
+$configFileName = realpath(trim(getenv('ESHOP_CONFIG_PATH')));
 
-if (!(file_exists($bootstrapFileName) && !is_dir($bootstrapFileName))) {
+if (!(file_exists($configFileName) && !is_dir($configFileName))) {
     $items = [
-        "Unable to find eShop bootstrap.php file.",
-        "You can override the path by using ESHOP_BOOTSTRAP_PATH environment variable.",
+        "Unable to find eShop config.inc.php file.",
+        "You can override the path by using ESHOP_CONFIG_PATH environment variable.",
         "\n"
     ];
     $message = implode(" ", $items);
     die($message);
 }
 
-require_once($bootstrapFileName);
-
-$configFile = new \OxidEsales\Eshop\Core\ConfigFile(OX_BASE_PATH . "config.inc.php");
+$configFile = new \OxidEsales\Eshop\Core\ConfigFile($configFileName);
 
 $connectionParams = array(
     'dbname' => $configFile->dbName,
