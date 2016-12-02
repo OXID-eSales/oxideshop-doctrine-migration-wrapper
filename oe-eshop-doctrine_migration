@@ -40,11 +40,14 @@ function main {
     [ "$EXEC_PE" ] && execute_doctrine_migrations "$PE_CONFIG_PATH" "$PE_DB_CONFIG_PATH" "$ARGS"
     [ "$EXEC_EE" ] && execute_doctrine_migrations "$EE_CONFIG_PATH" "$EE_DB_CONFIG_PATH" "$ARGS"
     [ "$EXEC_PR" ] && execute_doctrine_migrations "$PR_CONFIG_PATH" "$PR_DB_CONFIG_PATH" "$ARGS"
+
+    true
 }
 
 function execute_doctrine_migrations {
     local CONFIG_PATH="$1"
     local DB_CONFIG_PATH="$2"
+    local RC="0"
     shift 2
 
     local BIN="$ESHOP_DOCTRINE_MIGRATION_BIN_PATH"
@@ -56,6 +59,9 @@ function execute_doctrine_migrations {
     [ ! -z "$VERBOSE" ] && echo "CMD: $CMD"
 
     eval $CMD
+    RC=$?
+
+    [ $RC -ne 0 ] && exit $RC
 }
 
 main "$@"
