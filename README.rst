@@ -25,4 +25,4 @@ Possible ways to use
 - Run bash script: ``vendor/bin/oe-eshop-doctrine_migration`` DOCTRINE_COMMAND to execute specific command.
 - Run PHP script ``vendor/oxid-esales/migrate_db.php`` to run existing migrations.
 - Run PHP script ``vendor/oxid-esales/migrate_db.php`` DOCTRINE_COMMAND to execute specific command.
-- Use class ``OxidMigrations.php``
+- Use class ``Migrations`` or ``MigrationsBuilder``

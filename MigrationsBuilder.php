@@ -21,12 +21,25 @@
 
 namespace OxidEsales\DoctrineMigrations;
 
-$shopFacts = new \OxidEsales\DoctrineMigrations\ShopFacts\ShopFacts();
+use OxidEsales\DoctrineMigrations\ShopFacts\ShopFacts;
 
-return [
-    'dbname' => $shopFacts->getDatabaseName(),
-    'user' => $shopFacts->getDatabaseUserName(),
-    'password' => $shopFacts->getDatabasePassword(),
-    'host' => $shopFacts->getDatabaseHost(),
-    'driver' => $shopFacts->getDatabaseDriver()
-];
+class MigrationsBuilder
+{
+    /**
+     * @return Migrations
+     */
+    public function build()
+    {
+        $helperSet = new \Symfony\Component\Console\Helper\HelperSet();
+        $doctrineApplication = \Doctrine\DBAL\Migrations\Tools\Console\ConsoleRunner::createApplication($helperSet);
+        $doctrineApplication->setAutoExit(false);
+
+        $shopFacts = new ShopFacts();
+
+        $dbFilePath =__DIR__ . DIRECTORY_SEPARATOR . 'migrations-db.php';
+
+        $migrationAvailabilityChecker = new MigrationAvailabilityChecker();
+
+        return new Migrations($doctrineApplication, $shopFacts, $dbFilePath, $migrationAvailabilityChecker);
+    }
+}

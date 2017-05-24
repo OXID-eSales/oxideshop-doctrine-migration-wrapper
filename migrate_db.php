@@ -19,9 +19,10 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
-namespace OxidEsales\DoctrineMigrations\Config;
+namespace OxidEsales\DoctrineMigrations;
 
 $autoloadFiles = [
+    __DIR__ . '/vendor/autoload.php',
     __DIR__ . '/../vendor/autoload.php',
     __DIR__ . '/../../vendor/autoload.php',
     __DIR__ . '/../../../vendor/autoload.php',
@@ -34,5 +35,9 @@ foreach ($autoloadFiles as $autoloadFile) {
     }
 }
 
-use OxidEsales\DoctrineMigrations\OxidMigrations;
-isset($argv[1])?(new OxidMigrations())->execute($argv[1]):(new OxidMigrations())->execute();
+$migrationsBuilder = new \OxidEsales\DoctrineMigrations\MigrationsBuilder();
+$migrations = $migrationsBuilder->build();
+
+$command = isset($argv[1]) ? $argv[1] : null;
+
+$migrations->execute($command);
