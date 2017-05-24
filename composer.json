@@ -12,10 +12,16 @@
   },
   "autoload": {
     "psr-4": {
-      "OxidEsales\\DoctrineMigrations\\": "./"
+      "OxidEsales\\DoctrineMigrations\\": "./src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "OxidEsales\\DoctrineMigrations\\Tests\\": "./tests"
     }
   },
   "bin": [
-    "./oe-eshop-doctrine_migration"
+    "./bin/oe-eshop-db_migrate",
+    "./bin/oe-eshop-doctrine_migration"
   ]
 }

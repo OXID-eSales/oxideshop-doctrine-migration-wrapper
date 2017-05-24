@@ -34,7 +34,7 @@ class MigrationsBuilder
 
         $shopFacts = new ShopFacts();
 
-        $dbFilePath =__DIR__ . DIRECTORY_SEPARATOR . 'migrations-db.php';
+        $dbFilePath = __DIR__ . DIRECTORY_SEPARATOR;
 
         $migrationAvailabilityChecker = new MigrationAvailabilityChecker();
 

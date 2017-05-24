@@ -20,6 +20,7 @@
  */
 
 namespace OxidEsales\DoctrineMigrations\Tests\Unit;
+
 use org\bovigo\vfs\vfsStream;
 
 use OxidEsales\DoctrineMigrations\MigrationAvailabilityChecker;
