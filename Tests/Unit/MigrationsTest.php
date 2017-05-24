@@ -33,6 +33,9 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
         $doctrineApplication = $this->getMock('DoctrineApplicationWrapper', ['run']);
         $doctrineApplication->expects($this->atLeastOnce())->method('run');
 
+        $doctrineApplicationBuilder = $this->getMock('DoctrineApplicationBuilder', ['build']);
+        $doctrineApplicationBuilder->method('build')->will($this->returnValue($doctrineApplication));
+
         $shopFacts = $this->getMock('ShopFacts', ['getMigrationPaths']);
         $shopFacts->method('getMigrationPaths')->willReturn(['edition' => 'path_to_migrations']);
 
@@ -41,7 +44,7 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
         $migrationAvailabilityChecker = $this->getMock('MigrationAvailabilityChecker', ['migrationExists']);
         $migrationAvailabilityChecker->method('migrationExists')->willReturn(true);
 
-        $migrations = new Migrations($doctrineApplication, $shopFacts, $pathToDbConfig, $migrationAvailabilityChecker);
+        $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $pathToDbConfig, $migrationAvailabilityChecker);
         $migrations->execute('migrations:migrate');
     }
 
@@ -62,13 +65,16 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
         $doctrineApplication = $this->getMock('DoctrineApplicationWrapper', ['run']);
         $doctrineApplication->expects($this->atLeastOnce())->method('run')->with($input);
 
+        $doctrineApplicationBuilder = $this->getMock('DoctrineApplicationBuilder', ['build']);
+        $doctrineApplicationBuilder->method('build')->will($this->returnValue($doctrineApplication));
+
         $shopFacts = $this->getMock('ShopFacts', ['getMigrationPaths']);
         $shopFacts->method('getMigrationPaths')->willReturn($migrationPaths);
 
         $migrationAvailabilityChecker = $this->getMock('MigrationAvailabilityChecker', ['migrationExists']);
         $migrationAvailabilityChecker->method('migrationExists')->willReturn(true);
 
-        $migrations = new Migrations($doctrineApplication, $shopFacts, $dbConfigFilePath, $migrationAvailabilityChecker);
+        $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $dbConfigFilePath, $migrationAvailabilityChecker);
 
         $migrations->execute($command);
     }
@@ -116,13 +122,16 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
         $doctrineApplication->expects($this->at(1))->method('run')->with($inputPE);
         $doctrineApplication->expects($this->at(2))->method('run')->with($inputEE);
 
+        $doctrineApplicationBuilder = $this->getMock('DoctrineApplicationBuilder', ['build']);
+        $doctrineApplicationBuilder->method('build')->will($this->returnValue($doctrineApplication));
+
         $shopFacts = $this->getMock('ShopFacts', ['getMigrationPaths']);
         $shopFacts->method('getMigrationPaths')->willReturn($migrationPaths);
 
         $migrationAvailabilityChecker = $this->getMock('MigrationAvailabilityChecker', ['migrationExists']);
         $migrationAvailabilityChecker->method('migrationExists')->willReturn(true);
 
-        $migrations = new Migrations($doctrineApplication, $shopFacts, $dbConfigFilePath, $migrationAvailabilityChecker);
+        $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $dbConfigFilePath, $migrationAvailabilityChecker);
 
         $migrations->execute($command);
     }
@@ -137,13 +146,16 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
         $doctrineApplication = $this->getMock('DoctrineApplicationWrapper', ['run']);
         $doctrineApplication->expects($this->never())->method('run');
 
+        $doctrineApplicationBuilder = $this->getMock('DoctrineApplicationBuilder', ['build']);
+        $doctrineApplicationBuilder->method('build')->will($this->returnValue($doctrineApplication));
+
         $shopFacts = $this->getMock('ShopFacts', ['getMigrationPaths']);
         $shopFacts->method('getMigrationPaths')->willReturn($migrationPaths);
 
         $migrationAvailabilityChecker = $this->getMock('MigrationAvailabilityChecker', ['migrationExists']);
         $migrationAvailabilityChecker->method('migrationExists')->willReturn(false);
 
-        $migrations = new Migrations($doctrineApplication, $shopFacts, $dbConfigFilePath, $migrationAvailabilityChecker);
+        $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $dbConfigFilePath, $migrationAvailabilityChecker);
 
         $migrations->execute($command);
     }
@@ -157,13 +169,16 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
 
         $doctrineApplication = $this->getMock('DoctrineApplicationWrapper', ['run']);
 
+        $doctrineApplicationBuilder = $this->getMock('DoctrineApplicationBuilder', ['build']);
+        $doctrineApplicationBuilder->method('build')->will($this->returnValue($doctrineApplication));
+
         $shopFacts = $this->getMock('ShopFacts', ['getMigrationPaths']);
         $shopFacts->method('getMigrationPaths')->willReturn($migrationPaths);
 
         $migrationAvailabilityChecker = $this->getMock('MigrationAvailabilityChecker', ['migrationExists']);
         $migrationAvailabilityChecker->expects($this->atLeastOnce())->method('migrationExists')->with($ceMigrationsPath);
 
-        $migrations = new Migrations($doctrineApplication, $shopFacts, $dbConfigFilePath, $migrationAvailabilityChecker);
+        $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $dbConfigFilePath, $migrationAvailabilityChecker);
 
         $migrations->execute($command);
     }

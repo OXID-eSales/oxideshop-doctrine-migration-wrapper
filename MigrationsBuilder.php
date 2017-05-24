@@ -30,9 +30,7 @@ class MigrationsBuilder
      */
     public function build()
     {
-        $helperSet = new \Symfony\Component\Console\Helper\HelperSet();
-        $doctrineApplication = \Doctrine\DBAL\Migrations\Tools\Console\ConsoleRunner::createApplication($helperSet);
-        $doctrineApplication->setAutoExit(false);
+        $doctrineApplicationBuilder = new DoctrineApplicationBuilder();
 
         $shopFacts = new ShopFacts();
 
@@ -40,6 +38,6 @@ class MigrationsBuilder
 
         $migrationAvailabilityChecker = new MigrationAvailabilityChecker();
 
-        return new Migrations($doctrineApplication, $shopFacts, $dbFilePath, $migrationAvailabilityChecker);
+        return new Migrations($doctrineApplicationBuilder, $shopFacts, $dbFilePath, $migrationAvailabilityChecker);
     }
 }

@@ -25,8 +25,8 @@ use Symfony\Component\Console\Input\ArrayInput;
 
 class Migrations
 {
-    /** @var  \Doctrine\DBAL\Migrations\Tools\Console\ConsoleRunner */
-    private $doctrineApplication;
+    /** @var  \OxidEsales\DoctrineMigrations\DoctrineApplicationBuilder $doctrineApplicationBuilder */
+    private $doctrineApplicationBuilder;
 
     /** @var  \OxidEsales\DoctrineMigrations\ShopFacts\ShopFacts */
     private $eShopFacts;
@@ -37,9 +37,17 @@ class Migrations
     /** @var string path to file which contains database configuration for Doctrine Migrations */
     private $dbFilePath;
 
-    public function __construct($doctrineApplication, $shopFacts, $dbFilePath, $migrationAvailabilityChecker)
+    /**
+     * Sets all needed dependencies.
+     *
+     * @param \OxidEsales\DoctrineMigrations\DoctrineApplicationBuilder $doctrineApplicationBuilder
+     * @param \OxidEsales\DoctrineMigrations\ShopFacts\ShopFacts $shopFacts
+     * @param string $dbFilePath
+     * @param \OxidEsales\DoctrineMigrations\$MigrationAvailabilityChecker $migrationAvailabilityChecker
+     */
+    public function __construct($doctrineApplicationBuilder, $shopFacts, $dbFilePath, $migrationAvailabilityChecker)
     {
-        $this->doctrineApplication = $doctrineApplication;
+        $this->doctrineApplicationBuilder = $doctrineApplicationBuilder;
         $this->eShopFacts = $shopFacts;
         $this->dbFilePath = $dbFilePath;
         $this->migrationAvailabilityChecker = $migrationAvailabilityChecker;
@@ -50,6 +58,8 @@ class Migrations
         $migrationPaths = $this->eShopFacts->getMigrationPaths();
 
         foreach ($migrationPaths as $migrationPath) {
+            $doctrineApplication = $this->doctrineApplicationBuilder->build();
+
             $input = new ArrayInput([
                 '--configuration' => $migrationPath,
                 '--db-configuration' => $this->dbFilePath,
@@ -58,7 +68,7 @@ class Migrations
             ]);
 
             if ($this->migrationAvailabilityChecker->migrationExists($migrationPath)) {
-                $this->doctrineApplication->run($input);
+                $doctrineApplication->run($input);
             }
         }
     }
