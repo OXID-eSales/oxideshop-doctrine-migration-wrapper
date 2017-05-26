@@ -182,4 +182,28 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
 
         $migrations->execute($command);
     }
+
+    public function testRunGenerateMigrationCommandEvenIfNoMigrationExist()
+    {
+        $command = 'migrations:generate';
+        $dbConfigFilePath = 'path_to_DB_config_file';
+        $ceMigrationsPath = 'path_to_ce_migrations';
+        $migrationPaths = ['ce' => $ceMigrationsPath];
+
+        $doctrineApplication = $this->getMock('DoctrineApplicationWrapper', ['run']);
+        $doctrineApplication->expects($this->atLeastOnce())->method('run');
+
+        $doctrineApplicationBuilder = $this->getMock('DoctrineApplicationBuilder', ['build']);
+        $doctrineApplicationBuilder->method('build')->will($this->returnValue($doctrineApplication));
+
+        $shopFacts = $this->getMock('ShopFacts', ['getMigrationPaths']);
+        $shopFacts->method('getMigrationPaths')->willReturn($migrationPaths);
+
+        $migrationAvailabilityChecker = $this->getMock('MigrationAvailabilityChecker', ['migrationExists']);
+        $migrationAvailabilityChecker->method('migrationExists')->willReturn(false);
+
+        $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $dbConfigFilePath, $migrationAvailabilityChecker);
+
+        $migrations->execute($command);
+    }
 }

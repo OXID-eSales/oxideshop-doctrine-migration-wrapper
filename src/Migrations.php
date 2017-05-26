@@ -37,6 +37,9 @@ class Migrations
     /** @var string path to file which contains database configuration for Doctrine Migrations */
     private $dbFilePath;
 
+    /** Command for doctrine to run database migrations. */
+    const MIGRATE_COMMAND = 'migrations:migrate';
+
     /**
      * Sets all needed dependencies.
      *
@@ -67,7 +70,7 @@ class Migrations
                 'command' => $command
             ]);
 
-            if ($this->migrationAvailabilityChecker->migrationExists($migrationPath)) {
+            if ($command !== self::MIGRATE_COMMAND || $this->migrationAvailabilityChecker->migrationExists($migrationPath)) {
                 $doctrineApplication->run($input);
             }
         }
