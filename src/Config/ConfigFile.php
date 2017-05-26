@@ -44,7 +44,7 @@ class ConfigFile
         $pathToAutoloadFromThisScript = '/';
         $autoloaderName = 'vendor/autoload.php';
         $count = 0;
-        while ($count < 5) {
+        while ($count < 8) {
             $fullPathToAutoload = __DIR__ . $pathToAutoloadFromThisScript;
             if (is_file($fullPathToAutoload . $autoloaderName)) {
                 $rootPath = $fullPathToAutoload;
