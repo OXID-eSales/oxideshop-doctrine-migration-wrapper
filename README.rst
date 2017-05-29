@@ -26,6 +26,6 @@ Possible ways to use
 - Use composer command oe:migration:new to generate new migration.
 - Run bash script: ``vendor/bin/oe-eshop-doctrine_migration`` to run existing migrations.
 - Run bash script: ``vendor/bin/oe-eshop-doctrine_migration`` DOCTRINE_COMMAND to execute specific command.
-- Run PHP script ``vendor/oxid-esales/migrate.php`` to run existing migrations.
+- Run PHP script ``vendor/oxid-esales/migrate.php migrations:migrate`` to run existing migrations.
 - Run PHP script ``vendor/oxid-esales/migrate.php`` DOCTRINE_COMMAND to execute specific command.
 - Use class ``Migrations`` or ``MigrationsBuilder``
