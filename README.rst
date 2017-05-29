@@ -1,6 +1,9 @@
 OXID eShop doctrine migration integration
 =========================================
 
+.. image:: https://travis-ci.org/OXID-eSales/oxideshop-doctrine-migration-wrapper.svg?branch=master
+    :target: https://travis-ci.org/OXID-eSales/oxideshop-doctrine-migration-wrapper
+
 Current component allows to execute **doctrine migration binary** for active
 eShop edition and with database configured from the eShop installation itself.
 The following different logic is applied during the execution of different
