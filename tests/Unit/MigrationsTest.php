@@ -77,10 +77,10 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests that migrations for editions are called in a right order:
-     * First CE, then PE, then EE.
+     * Tests that all migrations are called what's defined in a Shop facts
+     * with an order from ShopFacts.
      */
-    public function testExecuteEEMigration()
+    public function testExecuteAllMigrations()
     {
         $command = 'migrations:migrate';
         $dbConfigFilePath = 'path_to_DB_config_file';

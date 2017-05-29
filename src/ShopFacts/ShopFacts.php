@@ -75,6 +75,9 @@ class ShopFacts
                                     .'/oxid-esales/oxideshop-ee/migration/migrations.yml';
         }
 
+        $migrationPaths['pr'] = $this->configReader->getVar(ConfigFile::PARAMETER_SOURCE_PATH)
+                                    . '/migration/project_migrations.yml';
+
         return $migrationPaths;
     }
 }
