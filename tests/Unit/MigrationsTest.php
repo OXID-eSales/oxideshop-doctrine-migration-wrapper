@@ -199,6 +199,28 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test to check if error code is passed from Doctrine to upper caller.
+     */
+    public function testReturnErrorCodeWhenMigrationFail()
+    {
+        $errorCode = 1;
+
+        $doctrineApplication = $this->getDoctrineStub($errorCode);
+
+        $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
+
+        $shopFacts = $this->getShopFactsStub(['edition' => 'path_to_migrations']);
+
+        $pathToDbConfig = '';
+
+        $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
+
+        $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $pathToDbConfig, $migrationAvailabilityChecker);
+
+        $this->assertSame($errorCode, $migrations->execute('migrations:migrate'));
+    }
+
+    /**
      * Create mock for Doctrine Application.
      *
      * @param bool $runsAtLeastOnce
@@ -222,11 +244,18 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Stub 3rd party dependency.
+     *
+     * @param bool $doctrineApplication what error code to return.
+     *
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function getDoctrineStub()
+    private function getDoctrineStub($result = 0)
     {
-        return $this->getMock('DoctrineApplicationWrapper', ['run']);
+        $doctrineApplication = $this->getMock('DoctrineApplicationWrapper', ['run']);
+        $doctrineApplication->method('run')->will($this->returnValue($result));
+
+        return $doctrineApplication;
     }
 
     /**

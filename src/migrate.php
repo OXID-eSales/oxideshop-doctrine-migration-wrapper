@@ -40,4 +40,4 @@ $migrations = $migrationsBuilder->build();
 
 $command = isset($argv[1]) ? $argv[1] : null;
 
-$migrations->execute($command);
+exit($migrations->execute($command));

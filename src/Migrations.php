@@ -71,7 +71,10 @@ class Migrations
             ]);
 
             if ($command !== self::MIGRATE_COMMAND || $this->migrationAvailabilityChecker->migrationExists($migrationPath)) {
-                $doctrineApplication->run($input);
+                $errorCode = $doctrineApplication->run($input);
+                if ($errorCode) {
+                    return $errorCode;
+                }
             }
         }
     }
