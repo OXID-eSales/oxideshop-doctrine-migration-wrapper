@@ -246,7 +246,7 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
     /**
      * Stub 3rd party dependency.
      *
-     * @param bool $doctrineApplication what error code to return.
+     * @param int $result what error code to return.
      *
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
