@@ -23,6 +23,11 @@ namespace OxidEsales\DoctrineMigrations;
 
 use Symfony\Component\Console\Input\ArrayInput;
 
+/**
+ * Class to run Doctrine Migration commands.
+ * OXID eShop might have several migrations to run for different edition and project.
+ * This class ensures that all needed migrations run.
+ */
 class Migrations
 {
     /** @var  \OxidEsales\DoctrineMigrations\DoctrineApplicationBuilder $doctrineApplicationBuilder */
@@ -56,6 +61,14 @@ class Migrations
         $this->migrationAvailabilityChecker = $migrationAvailabilityChecker;
     }
 
+    /**
+     * Execute Doctrine Migration command for all needed Shop edition and project.
+     * If Doctrine returns an error code breaks and return it.
+     *
+     * @param string $command Doctrine Migration command to run.
+     *
+     * @return int|null error code if one exist
+     */
     public function execute($command)
     {
         $migrationPaths = $this->eShopFacts->getMigrationPaths();
@@ -63,19 +76,50 @@ class Migrations
         foreach ($migrationPaths as $migrationPath) {
             $doctrineApplication = $this->doctrineApplicationBuilder->build();
 
-            $input = new ArrayInput([
-                '--configuration' => $migrationPath,
-                '--db-configuration' => $this->dbFilePath,
-                '-n' => true,
-                'command' => $command
-            ]);
+            $input = $this->formDoctrineInput($command, $migrationPath, $this->dbFilePath);
 
-            if ($command !== self::MIGRATE_COMMAND || $this->migrationAvailabilityChecker->migrationExists($migrationPath)) {
+            if ($this->shouldRunCommand($command, $migrationPath)) {
                 $errorCode = $doctrineApplication->run($input);
                 if ($errorCode) {
                     return $errorCode;
                 }
             }
         }
+    }
+
+    /**
+     * Form input which is expected by Doctrine.
+     *
+     * @param string $command command to run.
+     * @param string $migrationPath path to migration configuration file.
+     * @param string $dbFilePath path to database configuration file.
+     *
+     * @return ArrayInput
+     */
+    private function formDoctrineInput($command, $migrationPath, $dbFilePath)
+    {
+        $input = new ArrayInput([
+            '--configuration' => $migrationPath,
+            '--db-configuration' => $dbFilePath,
+            '-n' => true,
+            'command' => $command
+        ]);
+        return $input;
+    }
+
+    /**
+     * Check if command should be performed:
+     * - All commands should be performed without additional check except migrate
+     * - Migrate command should be performed only if actual migrations exist.
+     *
+     * @param string $command command to run.
+     * @param string $migrationPath path to migration configuration file.
+     *
+     * @return bool
+     */
+    private function shouldRunCommand($command, $migrationPath)
+    {
+        return ($command !== self::MIGRATE_COMMAND
+            || $this->migrationAvailabilityChecker->migrationExists($migrationPath));
     }
 }
