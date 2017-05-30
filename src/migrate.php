@@ -21,6 +21,7 @@
 
 namespace OxidEsales\DoctrineMigrations;
 
+$autoloadFileExist = false;
 $autoloadFiles = [
     __DIR__ . '/vendor/autoload.php',
     __DIR__ . '/../vendor/autoload.php',
@@ -32,7 +33,13 @@ $autoloadFiles = [
 foreach ($autoloadFiles as $autoloadFile) {
     if (file_exists($autoloadFile)) {
         require_once $autoloadFile;
+        $autoloadFileExist = true;
+        break;
     }
+}
+
+if (!$autoloadFileExist) {
+    exit("Autoload file was not found!");
 }
 
 $migrationsBuilder = new \OxidEsales\DoctrineMigrations\MigrationsBuilder();
