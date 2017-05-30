@@ -88,9 +88,9 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
         $peMigrationsPath = 'path_to_pe_migrations';
         $eeMigrationsPath = 'path_to_ee_migrations';
         $migrationPaths = [
-            'ce' => 'path_to_ce_migrations',
-            'pe' => 'path_to_pe_migrations',
-            'ee' => 'path_to_ee_migrations',
+            'ce' => $ceMigrationsPath,
+            'pe' => $peMigrationsPath,
+            'ee' => $eeMigrationsPath,
         ];
 
         $inputCE = new ArrayInput([
