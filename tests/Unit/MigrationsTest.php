@@ -131,6 +131,69 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests that only requested migration is called even when more migrations exist.
+     * Does testing by calling migration in different case sensitivity.
+     */
+    public function testExecuteOnlyRequestedMigration()
+    {
+        $command = 'migrations:migrate';
+        $dbConfigFilePath = 'path_to_DB_config_file';
+        $eeMigrationsPath = 'path_to_ee_migrations';
+        $migrationPaths = [
+            'ce' => 'path_to_ce_migrations',
+            'pe' => 'path_to_pe_migrations',
+            'eE' => $eeMigrationsPath,
+        ];
+
+        $inputEE = new ArrayInput([
+            '--configuration' => $eeMigrationsPath,
+            '--db-configuration' => $dbConfigFilePath,
+            '-n' => true,
+            'command' => $command
+        ]);
+
+        $doctrineApplication = $this->getMock('DoctrineApplicationWrapper', ['run']);
+        $doctrineApplication->expects($this->once())->method('run')->with($inputEE);
+
+        $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
+
+        $shopFacts = $this->getShopFactsStub($migrationPaths);
+
+        $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
+
+        $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $dbConfigFilePath, $migrationAvailabilityChecker);
+
+        $migrations->execute($command, 'Ee');
+    }
+
+    /**
+     * Tests that no error appears when no migrations exist for requested edition.
+     */
+    public function testNoErrorWhenNoMigrationExistForRequestedEdition()
+    {
+        $command = 'migrations:migrate';
+        $dbConfigFilePath = 'path_to_DB_config_file';
+        $migrationPaths = [
+            'ce' => 'path_to_ce_migrations',
+            'pe' => 'path_to_pe_migrations',
+            'ee' => 'path_to_ee_migrations',
+        ];
+
+        $doctrineApplication = $this->getMock('DoctrineApplicationWrapper', ['run']);
+        $doctrineApplication->expects($this->never())->method('run');
+
+        $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
+
+        $shopFacts = $this->getShopFactsStub($migrationPaths);
+
+        $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
+
+        $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $dbConfigFilePath, $migrationAvailabilityChecker);
+
+        $migrations->execute($command, 'PR');
+    }
+
+    /**
      * Check if Doctrine Application mock is NOT called
      * when migrations are NOT available.
      */

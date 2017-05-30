@@ -46,5 +46,6 @@ $migrationsBuilder = new \OxidEsales\DoctrineMigrations\MigrationsBuilder();
 $migrations = $migrationsBuilder->build();
 
 $command = isset($argv[1]) ? $argv[1] : null;
+$edition = isset($argv[2]) ? $argv[2] : null;
 
-exit($migrations->execute($command));
+exit($migrations->execute($command, $edition));

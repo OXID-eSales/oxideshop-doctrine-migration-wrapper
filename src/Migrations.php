@@ -66,14 +66,16 @@ class Migrations
      * If Doctrine returns an error code breaks and return it.
      *
      * @param string $command Doctrine Migration command to run.
+     * @param string $edition Possibility to run migration only against one edition.
      *
      * @return int|null error code if one exist
      */
-    public function execute($command)
+    public function execute($command, $edition = null)
     {
-        $migrationPaths = $this->eShopFacts->getMigrationPaths();
+        $migrationPaths = $this->getMigrationPaths($edition);
 
-        foreach ($migrationPaths as $migrationPath) {
+        foreach ($migrationPaths as $migrationEdition => $migrationPath) {
+
             $doctrineApplication = $this->doctrineApplicationBuilder->build();
 
             $input = $this->formDoctrineInput($command, $migrationPath, $this->dbFilePath);
@@ -121,5 +123,31 @@ class Migrations
     {
         return ($command !== self::MIGRATE_COMMAND
             || $this->migrationAvailabilityChecker->migrationExists($migrationPath));
+    }
+
+    /**
+     * Filters out only needed migrations.
+     *
+     * @param string $edition Shop edition.
+     *
+     * @return array
+     */
+    private function getMigrationPaths($edition = null)
+    {
+        $allMigrationPaths = $this->eShopFacts->getMigrationPaths();
+
+        if (is_null($edition)) {
+            return $allMigrationPaths;
+        }
+
+        $migrationPaths = [];
+        foreach ($allMigrationPaths as $migrationEdition => $migrationPath) {
+            if (strtolower($migrationEdition) === strtolower($edition)) {
+                $migrationPaths[$migrationEdition] = $migrationPath;
+                break;
+            }
+        }
+
+        return $migrationPaths;
     }
 }
