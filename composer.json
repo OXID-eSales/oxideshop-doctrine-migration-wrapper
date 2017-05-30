@@ -4,6 +4,7 @@
   "license": "GPL-3.0",
   "require": {
     "doctrine/migrations": "^1.4.1",
+    "oxid-esales/oxideshop-facts": "^1.0.0",
     "symfony/console": "*"
   },
   "require-dev": {
