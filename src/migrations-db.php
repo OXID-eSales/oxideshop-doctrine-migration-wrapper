@@ -21,7 +21,7 @@
 
 namespace OxidEsales\DoctrineMigrationWrapper;
 
-$shopFacts = new \OxidEsales\ShopFacts\ShopFacts();
+$shopFacts = new \OxidEsales\Facts\ShopFacts();
 
 return [
     'dbname' => $shopFacts->getDatabaseName(),

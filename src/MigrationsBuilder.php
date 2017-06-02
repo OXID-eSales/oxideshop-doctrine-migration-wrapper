@@ -21,7 +21,7 @@
 
 namespace OxidEsales\DoctrineMigrationWrapper;
 
-use OxidEsales\ShopFacts\ShopFacts;
+use OxidEsales\Facts\ShopFacts;
 
 class MigrationsBuilder
 {

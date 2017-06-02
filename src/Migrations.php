@@ -33,7 +33,7 @@ class Migrations
     /** @var  \OxidEsales\DoctrineMigrationWrapper\DoctrineApplicationBuilder $doctrineApplicationBuilder */
     private $doctrineApplicationBuilder;
 
-    /** @var  \OxidEsales\ShopFacts\ShopFacts */
+    /** @var  \OxidEsales\Facts\ShopFacts */
     private $eShopFacts;
 
     /** @var  \OxidEsales\DoctrineMigrationWrapper\$MigrationAvailabilityChecker */
@@ -49,7 +49,7 @@ class Migrations
      * Sets all needed dependencies.
      *
      * @param \OxidEsales\DoctrineMigrationWrapper\DoctrineApplicationBuilder $doctrineApplicationBuilder
-     * @param \OxidEsales\ShopFacts\ShopFacts $shopFacts
+     * @param \OxidEsales\Facts\ShopFacts $shopFacts
      * @param string $dbFilePath
      * @param \OxidEsales\DoctrineMigrationWrapper\$MigrationAvailabilityChecker $migrationAvailabilityChecker
      */
