@@ -19,9 +19,9 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
-namespace OxidEsales\DoctrineMigrations\Tests\Unit;
+namespace OxidEsales\DoctrineMigrationWrapper\Tests\Unit;
 
-use OxidEsales\DoctrineMigrations\Migrations;
+use OxidEsales\DoctrineMigrationWrapper\Migrations;
 use Symfony\Component\Console\Input\ArrayInput;
 
 class MigrationsTest extends \PHPUnit_Framework_TestCase

@@ -19,7 +19,7 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
-namespace OxidEsales\DoctrineMigrations;
+namespace OxidEsales\DoctrineMigrationWrapper;
 
 use Symfony\Component\Console\Input\ArrayInput;
 
@@ -30,13 +30,13 @@ use Symfony\Component\Console\Input\ArrayInput;
  */
 class Migrations
 {
-    /** @var  \OxidEsales\DoctrineMigrations\DoctrineApplicationBuilder $doctrineApplicationBuilder */
+    /** @var  \OxidEsales\DoctrineMigrationWrapper\DoctrineApplicationBuilder $doctrineApplicationBuilder */
     private $doctrineApplicationBuilder;
 
     /** @var  \OxidEsales\ShopFacts\ShopFacts */
     private $eShopFacts;
 
-    /** @var  \OxidEsales\DoctrineMigrations\$MigrationAvailabilityChecker */
+    /** @var  \OxidEsales\DoctrineMigrationWrapper\$MigrationAvailabilityChecker */
     private $migrationAvailabilityChecker;
 
     /** @var string path to file which contains database configuration for Doctrine Migrations */
@@ -48,10 +48,10 @@ class Migrations
     /**
      * Sets all needed dependencies.
      *
-     * @param \OxidEsales\DoctrineMigrations\DoctrineApplicationBuilder $doctrineApplicationBuilder
+     * @param \OxidEsales\DoctrineMigrationWrapper\DoctrineApplicationBuilder $doctrineApplicationBuilder
      * @param \OxidEsales\ShopFacts\ShopFacts $shopFacts
      * @param string $dbFilePath
-     * @param \OxidEsales\DoctrineMigrations\$MigrationAvailabilityChecker $migrationAvailabilityChecker
+     * @param \OxidEsales\DoctrineMigrationWrapper\$MigrationAvailabilityChecker $migrationAvailabilityChecker
      */
     public function __construct($doctrineApplicationBuilder, $shopFacts, $dbFilePath, $migrationAvailabilityChecker)
     {

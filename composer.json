@@ -13,12 +13,12 @@
   },
   "autoload": {
     "psr-4": {
-      "OxidEsales\\DoctrineMigrations\\": "./src"
+      "OxidEsales\\DoctrineMigrationWrapper\\": "./src"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "OxidEsales\\DoctrineMigrations\\Tests\\": "./tests"
+      "OxidEsales\\DoctrineMigrationWrapper\\Tests\\": "./tests"
     }
   },
   "bin": [

@@ -19,7 +19,7 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
-namespace OxidEsales\DoctrineMigrations;
+namespace OxidEsales\DoctrineMigrationWrapper;
 
 $autoloadFileExist = false;
 $autoloadFiles = [
@@ -42,7 +42,7 @@ if (!$autoloadFileExist) {
     exit("Autoload file was not found!");
 }
 
-$migrationsBuilder = new \OxidEsales\DoctrineMigrations\MigrationsBuilder();
+$migrationsBuilder = new \OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder();
 $migrations = $migrationsBuilder->build();
 
 $command = isset($argv[1]) ? $argv[1] : null;

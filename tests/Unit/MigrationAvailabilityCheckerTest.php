@@ -19,11 +19,11 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
-namespace OxidEsales\DoctrineMigrations\Tests\Unit;
+namespace OxidEsales\DoctrineMigrationWrapper\Tests\Unit;
 
 use org\bovigo\vfs\vfsStream;
 
-use OxidEsales\DoctrineMigrations\MigrationAvailabilityChecker;
+use OxidEsales\DoctrineMigrationWrapper\MigrationAvailabilityChecker;
 
 class MigrationAvailabilityCheckerTest extends \PHPUnit_Framework_TestCase
 {

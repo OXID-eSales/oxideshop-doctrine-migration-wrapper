@@ -6,7 +6,7 @@
  * Time: 2:23 PM
  */
 
-namespace OxidEsales\DoctrineMigrations;
+namespace OxidEsales\DoctrineMigrationWrapper;
 
 class DoctrineApplicationBuilder
 {
