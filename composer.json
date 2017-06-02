@@ -5,7 +5,7 @@
   "require": {
     "php": ">=5.6",
     "doctrine/migrations": "^1.4.1",
-    "oxid-esales/oxideshop-facts": "^2.0.0",
+    "oxid-esales/oxideshop-facts": "dev-master",
     "symfony/console": "*"
   },
   "require-dev": {
