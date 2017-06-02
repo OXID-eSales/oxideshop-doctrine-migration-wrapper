@@ -43,7 +43,7 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
 
         $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $pathToDbConfig, $migrationAvailabilityChecker);
-        $migrations->execute('migrations:migrate');
+        $this->assertSame(0, $migrations->execute('migrations:migrate'));
     }
 
     /**

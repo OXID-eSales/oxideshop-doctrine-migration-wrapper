@@ -68,7 +68,7 @@ class Migrations
      * @param string $command Doctrine Migration command to run.
      * @param string $edition Possibility to run migration only against one edition.
      *
-     * @return int|null error code if one exist
+     * @return int error code if one exist or 0 for success
      */
     public function execute($command, $edition = null)
     {
@@ -87,6 +87,8 @@ class Migrations
                 }
             }
         }
+
+        return 0;
     }
 
     /**
