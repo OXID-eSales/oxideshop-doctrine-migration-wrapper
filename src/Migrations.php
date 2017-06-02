@@ -33,8 +33,8 @@ class Migrations
     /** @var  \OxidEsales\DoctrineMigrationWrapper\DoctrineApplicationBuilder $doctrineApplicationBuilder */
     private $doctrineApplicationBuilder;
 
-    /** @var  \OxidEsales\Facts\ShopFacts */
-    private $eShopFacts;
+    /** @var  \OxidEsales\Facts\Facts */
+    private $facts;
 
     /** @var  \OxidEsales\DoctrineMigrationWrapper\$MigrationAvailabilityChecker */
     private $migrationAvailabilityChecker;
@@ -49,14 +49,14 @@ class Migrations
      * Sets all needed dependencies.
      *
      * @param \OxidEsales\DoctrineMigrationWrapper\DoctrineApplicationBuilder $doctrineApplicationBuilder
-     * @param \OxidEsales\Facts\ShopFacts $shopFacts
+     * @param \OxidEsales\Facts\Facts $facts
      * @param string $dbFilePath
      * @param \OxidEsales\DoctrineMigrationWrapper\$MigrationAvailabilityChecker $migrationAvailabilityChecker
      */
-    public function __construct($doctrineApplicationBuilder, $shopFacts, $dbFilePath, $migrationAvailabilityChecker)
+    public function __construct($doctrineApplicationBuilder, $facts, $dbFilePath, $migrationAvailabilityChecker)
     {
         $this->doctrineApplicationBuilder = $doctrineApplicationBuilder;
-        $this->eShopFacts = $shopFacts;
+        $this->facts = $facts;
         $this->dbFilePath = $dbFilePath;
         $this->migrationAvailabilityChecker = $migrationAvailabilityChecker;
     }
@@ -136,7 +136,7 @@ class Migrations
      */
     private function getMigrationPaths($edition = null)
     {
-        $allMigrationPaths = $this->eShopFacts->getMigrationPaths();
+        $allMigrationPaths = $this->facts->getMigrationPaths();
 
         if (is_null($edition)) {
             return $allMigrationPaths;

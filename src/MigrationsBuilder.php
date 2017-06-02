@@ -21,7 +21,7 @@
 
 namespace OxidEsales\DoctrineMigrationWrapper;
 
-use OxidEsales\Facts\ShopFacts;
+use OxidEsales\Facts\Facts;
 
 class MigrationsBuilder
 {
@@ -32,12 +32,12 @@ class MigrationsBuilder
     {
         $doctrineApplicationBuilder = new DoctrineApplicationBuilder();
 
-        $shopFacts = new ShopFacts();
+        $facts = new Facts();
 
         $dbFilePath = __DIR__ . DIRECTORY_SEPARATOR . 'migrations-db.php' ;
 
         $migrationAvailabilityChecker = new MigrationAvailabilityChecker();
 
-        return new Migrations($doctrineApplicationBuilder, $shopFacts, $dbFilePath, $migrationAvailabilityChecker);
+        return new Migrations($doctrineApplicationBuilder, $facts, $dbFilePath, $migrationAvailabilityChecker);
     }
 }

@@ -36,13 +36,13 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
-        $shopFacts = $this->getShopFactsStub(['edition' => 'path_to_migrations']);
+        $facts = $this->getFactsStub(['edition' => 'path_to_migrations']);
 
         $pathToDbConfig = '';
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
 
-        $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $pathToDbConfig, $migrationAvailabilityChecker);
+        $migrations = new Migrations($doctrineApplicationBuilder, $facts, $pathToDbConfig, $migrationAvailabilityChecker);
         $this->assertSame(0, $migrations->execute('migrations:migrate'));
     }
 
@@ -67,18 +67,18 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
-        $shopFacts = $this->getShopFactsStub(['ce' => $ceMigrationsPath]);
+        $facts = $this->getFactsStub(['ce' => $ceMigrationsPath]);
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
 
-        $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $dbConfigFilePath, $migrationAvailabilityChecker);
+        $migrations = new Migrations($doctrineApplicationBuilder, $facts, $dbConfigFilePath, $migrationAvailabilityChecker);
 
         $migrations->execute($command);
     }
 
     /**
      * Tests that all migrations are called what's defined in a Shop facts
-     * with an order from ShopFacts.
+     * with an order from Facts.
      */
     public function testExecuteAllMigrations()
     {
@@ -121,11 +121,11 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
-        $shopFacts = $this->getShopFactsStub($migrationPaths);
+        $facts = $this->getFactsStub($migrationPaths);
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
 
-        $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $dbConfigFilePath, $migrationAvailabilityChecker);
+        $migrations = new Migrations($doctrineApplicationBuilder, $facts, $dbConfigFilePath, $migrationAvailabilityChecker);
 
         $migrations->execute($command);
     }
@@ -157,11 +157,11 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
-        $shopFacts = $this->getShopFactsStub($migrationPaths);
+        $facts = $this->getFactsStub($migrationPaths);
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
 
-        $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $dbConfigFilePath, $migrationAvailabilityChecker);
+        $migrations = new Migrations($doctrineApplicationBuilder, $facts, $dbConfigFilePath, $migrationAvailabilityChecker);
 
         $migrations->execute($command, 'Ee');
     }
@@ -184,11 +184,11 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
-        $shopFacts = $this->getShopFactsStub($migrationPaths);
+        $facts = $this->getFactsStub($migrationPaths);
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
 
-        $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $dbConfigFilePath, $migrationAvailabilityChecker);
+        $migrations = new Migrations($doctrineApplicationBuilder, $facts, $dbConfigFilePath, $migrationAvailabilityChecker);
 
         $migrations->execute($command, 'PR');
     }
@@ -207,11 +207,11 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
-        $shopFacts = $this->getShopFactsStub(['ce' => $ceMigrationsPath]);
+        $facts = $this->getFactsStub(['ce' => $ceMigrationsPath]);
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(false);
 
-        $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $dbConfigFilePath, $migrationAvailabilityChecker);
+        $migrations = new Migrations($doctrineApplicationBuilder, $facts, $dbConfigFilePath, $migrationAvailabilityChecker);
 
         $migrations->execute($command);
     }
@@ -229,12 +229,12 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
-        $shopFacts = $this->getShopFactsStub(['ce' => $ceMigrationsPath]);
+        $facts = $this->getFactsStub(['ce' => $ceMigrationsPath]);
 
         $migrationAvailabilityChecker = $this->getMock('MigrationAvailabilityChecker', ['migrationExists']);
         $migrationAvailabilityChecker->expects($this->atLeastOnce())->method('migrationExists')->with($ceMigrationsPath);
 
-        $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $dbConfigFilePath, $migrationAvailabilityChecker);
+        $migrations = new Migrations($doctrineApplicationBuilder, $facts, $dbConfigFilePath, $migrationAvailabilityChecker);
 
         $migrations->execute($command);
     }
@@ -252,11 +252,11 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
-        $shopFacts = $this->getShopFactsStub(['ce' => $ceMigrationsPath]);
+        $facts = $this->getFactsStub(['ce' => $ceMigrationsPath]);
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(false);
 
-        $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $dbConfigFilePath, $migrationAvailabilityChecker);
+        $migrations = new Migrations($doctrineApplicationBuilder, $facts, $dbConfigFilePath, $migrationAvailabilityChecker);
 
         $migrations->execute($command);
     }
@@ -272,13 +272,13 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
-        $shopFacts = $this->getShopFactsStub(['edition' => 'path_to_migrations']);
+        $facts = $this->getFactsStub(['edition' => 'path_to_migrations']);
 
         $pathToDbConfig = '';
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
 
-        $migrations = new Migrations($doctrineApplicationBuilder, $shopFacts, $pathToDbConfig, $migrationAvailabilityChecker);
+        $migrations = new Migrations($doctrineApplicationBuilder, $facts, $pathToDbConfig, $migrationAvailabilityChecker);
 
         $this->assertSame($errorCode, $migrations->execute('migrations:migrate'));
     }
@@ -343,12 +343,12 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
      *
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function getShopFactsStub($migrationPaths)
+    private function getFactsStub($migrationPaths)
     {
-        $shopFacts = $this->getMock('ShopFacts', ['getMigrationPaths']);
-        $shopFacts->method('getMigrationPaths')->willReturn($migrationPaths);
+        $facts = $this->getMock('Facts', ['getMigrationPaths']);
+        $facts->method('getMigrationPaths')->willReturn($migrationPaths);
 
-        return $shopFacts;
+        return $facts;
     }
 
     /**

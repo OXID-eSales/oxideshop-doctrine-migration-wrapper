@@ -21,12 +21,12 @@
 
 namespace OxidEsales\DoctrineMigrationWrapper;
 
-$shopFacts = new \OxidEsales\Facts\ShopFacts();
+$facts = new \OxidEsales\Facts\Facts();
 
 return [
-    'dbname' => $shopFacts->getDatabaseName(),
-    'user' => $shopFacts->getDatabaseUserName(),
-    'password' => $shopFacts->getDatabasePassword(),
-    'host' => $shopFacts->getDatabaseHost(),
-    'driver' => $shopFacts->getDatabaseDriver()
+    'dbname' => $facts->getDatabaseName(),
+    'user' => $facts->getDatabaseUserName(),
+    'password' => $facts->getDatabasePassword(),
+    'host' => $facts->getDatabaseHost(),
+    'driver' => $facts->getDatabaseDriver()
 ];
