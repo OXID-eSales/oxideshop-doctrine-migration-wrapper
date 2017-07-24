@@ -23,6 +23,8 @@
       "OxidEsales\\DoctrineMigrationWrapper\\Tests\\": "./tests"
     }
   },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "bin": [
     "./bin/oe-eshop-db_migrate",
     "./bin/oe-eshop-doctrine_migration"
