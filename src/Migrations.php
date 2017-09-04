@@ -22,6 +22,7 @@
 namespace OxidEsales\DoctrineMigrationWrapper;
 
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * Class to run Doctrine Migration commands.
@@ -45,6 +46,9 @@ class Migrations
     /** Command for doctrine to run database migrations. */
     const MIGRATE_COMMAND = 'migrations:migrate';
 
+    /** @var ConsoleOutput Add a possibility to provide a custom output handler */
+    private $output = null;
+
     /**
      * Sets all needed dependencies.
      *
@@ -59,6 +63,14 @@ class Migrations
         $this->facts = $facts;
         $this->dbFilePath = $dbFilePath;
         $this->migrationAvailabilityChecker = $migrationAvailabilityChecker;
+    }
+
+    /**
+     * @param ConsoleOutput $output Add a possibility to provide a custom output handler
+     */
+    public function setOutput(ConsoleOutput $output = null)
+    {
+        $this->output = $output;
     }
 
     /**
@@ -81,7 +93,7 @@ class Migrations
             $input = $this->formDoctrineInput($command, $migrationPath, $this->dbFilePath);
 
             if ($this->shouldRunCommand($command, $migrationPath)) {
-                $errorCode = $doctrineApplication->run($input);
+                $errorCode = $doctrineApplication->run($input, $this->output);
                 if ($errorCode) {
                     return $errorCode;
                 }

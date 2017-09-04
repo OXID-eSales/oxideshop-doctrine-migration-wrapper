@@ -28,11 +28,13 @@ class MigrationsBuilder
     /**
      * @return Migrations
      */
-    public function build()
+    public function build(Facts $facts = null)
     {
         $doctrineApplicationBuilder = new DoctrineApplicationBuilder();
 
-        $facts = new Facts();
+        if (!$facts) {
+            $facts = new Facts();
+        }
 
         $dbFilePath = __DIR__ . DIRECTORY_SEPARATOR . 'migrations-db.php' ;
 
