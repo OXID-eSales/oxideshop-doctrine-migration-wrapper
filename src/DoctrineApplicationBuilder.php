@@ -25,7 +25,7 @@ class DoctrineApplicationBuilder
         $helperSet = new \Symfony\Component\Console\Helper\HelperSet();
         $doctrineApplication = \Doctrine\DBAL\Migrations\Tools\Console\ConsoleRunner::createApplication($helperSet);
         $doctrineApplication->setAutoExit(false);
-        $doctrineApplication->setCatchExceptions(false);
+        $doctrineApplication->setCatchExceptions(false); // we handle the exception on our own!
 
         return $doctrineApplication;
     }
