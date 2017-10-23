@@ -19,9 +19,13 @@ migration scripts suites within different eShop editions:
 Keep in mind that the migration suite is executed only when it is able to find
 **at least one** migration script.
 
+Recommended way to update your OXID eShop
+-----------------------------------------
+
+vendor/bin/oe-eshop-db_migrate migrations:migrate
+
 Possible ways to use
 --------------------
-
 - Use composer command oe:migration:run to run exsting migrations.
 - Use composer command oe:migration:new to generate new migration.
 - Run bash script: ``vendor/bin/oe-eshop-doctrine_migration`` to run existing migrations.
