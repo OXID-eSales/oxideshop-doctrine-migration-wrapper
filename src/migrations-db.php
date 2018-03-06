@@ -28,5 +28,9 @@ return [
     'user' => $facts->getDatabaseUserName(),
     'password' => $facts->getDatabasePassword(),
     'host' => $facts->getDatabaseHost(),
-    'driver' => $facts->getDatabaseDriver()
+    'driver' => $facts->getDatabaseDriver(),
+    'charset' => 'utf8',
+    'driverOptions' => [
+        \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET @@SESSION.sql_mode=\'\''
+    ]
 ];
