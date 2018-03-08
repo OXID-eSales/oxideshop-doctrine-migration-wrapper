@@ -36,7 +36,7 @@ class EnvironmentPreparator
 
     private function openDatabaseConnection()
     {
-        $this->databaseConnection = new \mysqli($this->configFile->dbHost, $this->configFile->dbUser, $this->configFile->dbPwd);
+        $this->databaseConnection = new \PDO('mysql:host=' . $this->configFile->dbHost, $this->configFile->dbUser, $this->configFile->dbPwd);
     }
 
     private function setUpDatabase()
@@ -68,6 +68,6 @@ class EnvironmentPreparator
 
     private function closeDatabaseConnection()
     {
-        mysqli_close($this->databaseConnection);
+        $this->databaseConnection = null;
     }
 }

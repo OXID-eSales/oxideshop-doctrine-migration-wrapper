@@ -20,7 +20,7 @@
  */
 
 // Database connection information
-$this->dbType = 'mysqli';
+$this->dbType = 'pdo_mysql';
 $this->dbHost = '127.0.0.1'; // database host name
 $this->dbName = 'test_doctrine_migration_wrapper'; // database name
 $this->dbUser = 'root'; // database user name

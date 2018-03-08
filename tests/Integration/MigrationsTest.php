@@ -66,21 +66,21 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
         $migration->execute('migrations:migrate');
 
         $databaseName = $this->configFile->dbName;
-        $databaseConnection = new \mysqli($this->configFile->dbHost, $this->configFile->dbUser, $this->configFile->dbPwd);
+        $databaseConnection = new \PDO('mysql:host=' . $this->configFile->dbHost, $this->configFile->dbUser, $this->configFile->dbPwd);
 
         $result = $databaseConnection->query(
             "SELECT id as entries FROM `$databaseName`.`test_doctrine_migration_wrapper`"
         );
-        $this->assertSame(2, $result->num_rows, 'There must be one row for shop migration and one for project.');
+        $this->assertSame(2, $result->rowCount(), 'There must be one row for shop migration and one for project.');
 
         $result = $databaseConnection->query(
             "SELECT 1 FROM `$databaseName`.`test_doctrine_migration_wrapper` WHERE id = 'shop_migration'"
         );
-        $this->assertSame(1, $result->num_rows, 'There must be one row for shop migration');
+        $this->assertSame(1, $result->rowCount(), 'There must be one row for shop migration');
 
         $result = $databaseConnection->query(
             "SELECT 1 FROM `$databaseName`.`test_doctrine_migration_wrapper` WHERE id = 'project_migration'"
         );
-        $this->assertSame(1, $result->num_rows, 'There must be one row for project migration');
+        $this->assertSame(1, $result->rowCount(), 'There must be one row for project migration');
     }
 }
