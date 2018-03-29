@@ -22,6 +22,7 @@
 // Database connection information
 $this->dbType = 'pdo_mysql';
 $this->dbHost = '127.0.0.1'; // database host name
+$this->dbPort = '3306'; // database port
 $this->dbName = 'test_doctrine_migration_wrapper'; // database name
 $this->dbUser = 'root'; // database user name
 $this->dbPwd = ''; // database user password
