@@ -28,6 +28,7 @@ return [
     'user' => $facts->getDatabaseUserName(),
     'password' => $facts->getDatabasePassword(),
     'host' => $facts->getDatabaseHost(),
+    'port' => $facts->getDatabasePort(),
     'driver' => $facts->getDatabaseDriver(),
     'charset' => 'utf8',
     'driverOptions' => [
