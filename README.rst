@@ -33,3 +33,8 @@ Possible ways to use
 - Run PHP script ``vendor/oxid-esales/migrate.php migrations:migrate`` to run existing migrations.
 - Run PHP script ``vendor/oxid-esales/migrate.php`` DOCTRINE_COMMAND to execute specific command.
 - Use class ``Migrations`` or ``MigrationsBuilder``
+
+Bugs and Issues
+---------------
+
+If you experience any bugs or issues, please report them in the section **OXID eShop (all versions)** of https://bugs.oxid-esales.com.
