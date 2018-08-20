@@ -22,7 +22,7 @@
 namespace OxidEsales\DoctrineMigrationWrapper;
 
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\Output;
 
 /**
  * Class to run Doctrine Migration commands.
@@ -46,7 +46,7 @@ class Migrations
     /** Command for doctrine to run database migrations. */
     const MIGRATE_COMMAND = 'migrations:migrate';
 
-    /** @var ConsoleOutput Add a possibility to provide a custom output handler */
+    /** @var Output Add a possibility to provide a custom output handler */
     private $output = null;
 
     /**
@@ -66,9 +66,9 @@ class Migrations
     }
 
     /**
-     * @param ConsoleOutput $output Add a possibility to provide a custom output handler
+     * @param Output $output Add a possibility to provide a custom output handler
      */
-    public function setOutput(ConsoleOutput $output = null)
+    public function setOutput(Output $output = null)
     {
         $this->output = $output;
     }
