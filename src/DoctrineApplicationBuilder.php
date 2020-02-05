@@ -8,7 +8,8 @@
 
 namespace OxidEsales\DoctrineMigrationWrapper;
 
-use Doctrine\Migrations\Tools\Console\ConsoleRunner
+use Doctrine\Migrations\Tools\Console\ConsoleRunner;
+    
 class DoctrineApplicationBuilder
 {
     /**
