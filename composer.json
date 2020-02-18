@@ -5,7 +5,7 @@
   "require": {
     "php": ">=5.6",
     "doctrine/migrations": "^2.2.1",
-    "oxid-esales/oxideshop-facts": "dev-b-6.x-update_symfony-OXDEV-3039",
+    "oxid-esales/oxideshop-facts": "dev-master-update_symfony-OXDEV-3039",
     "symfony/console": "^5.0.4"
   },
   "require-dev": {
