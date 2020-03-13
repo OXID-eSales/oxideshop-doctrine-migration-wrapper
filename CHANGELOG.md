@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/ ).
 ## [2.1.4] - unreleased
 
 ### Changed
+- Update symfony components to version 5
 
 ### Fixed
 
