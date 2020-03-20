@@ -24,7 +24,7 @@ namespace OxidEsales\DoctrineMigrationWrapper\Tests\Integration;
 use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
 use OxidEsales\Facts\Config\ConfigFile;
 
-class MigrationsTest extends \PHPUnit_Framework_TestCase
+class MigrationsTest extends \PHPUnit\Framework\TestCase
 {
     /** @var ConfigFile */
     private $configFile = null;
@@ -38,7 +38,7 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
         parent::__construct();
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -46,7 +46,7 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
         $this->configFile = new ConfigFile();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 

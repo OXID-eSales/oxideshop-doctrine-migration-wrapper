@@ -25,7 +25,7 @@ use org\bovigo\vfs\vfsStream;
 
 use OxidEsales\DoctrineMigrationWrapper\MigrationAvailabilityChecker;
 
-class MigrationAvailabilityCheckerTest extends \PHPUnit_Framework_TestCase
+class MigrationAvailabilityCheckerTest extends \PHPUnit\Framework\TestCase
 {
     public function testReturnFalseWhenFileDoesNotExist()
     {

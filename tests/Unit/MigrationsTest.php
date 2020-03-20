@@ -24,7 +24,7 @@ namespace OxidEsales\DoctrineMigrationWrapper\Tests\Unit;
 use OxidEsales\DoctrineMigrationWrapper\Migrations;
 use Symfony\Component\Console\Input\ArrayInput;
 
-class MigrationsTest extends \PHPUnit_Framework_TestCase
+class MigrationsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Check if Doctrine Application mock is called
@@ -114,7 +114,10 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
             'command' => $command
         ]);
 
-        $doctrineApplication = $this->getMock('DoctrineApplicationWrapper', ['run']);
+        $doctrineApplication = $this->getMockBuilder('DoctrineApplicationWrapper')
+            ->setMethods(['run'])
+            ->getMock();
+
         $doctrineApplication->expects($this->at(0))->method('run')->with($inputCE);
         $doctrineApplication->expects($this->at(1))->method('run')->with($inputPE);
         $doctrineApplication->expects($this->at(2))->method('run')->with($inputEE);
@@ -152,7 +155,10 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
             'command' => $command
         ]);
 
-        $doctrineApplication = $this->getMock('DoctrineApplicationWrapper', ['run']);
+        $doctrineApplication = $this->getMockBuilder('DoctrineApplicationWrapper')
+            ->setMethods(['run'])
+            ->getMock();
+
         $doctrineApplication->expects($this->once())->method('run')->with($inputEE);
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
@@ -179,7 +185,10 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
             'ee' => 'path_to_ee_migrations',
         ];
 
-        $doctrineApplication = $this->getMock('DoctrineApplicationWrapper', ['run']);
+        $doctrineApplication = $this->getMockBuilder('DoctrineApplicationWrapper')
+            ->setMethods(['run'])
+            ->getMock();
+
         $doctrineApplication->expects($this->never())->method('run');
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
@@ -231,7 +240,10 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
 
         $facts = $this->getFactsStub(['ce' => $ceMigrationsPath]);
 
-        $migrationAvailabilityChecker = $this->getMock('MigrationAvailabilityChecker', ['migrationExists']);
+        $migrationAvailabilityChecker = $this->getMockBuilder('MigrationAvailabilityChecker')
+            ->setMethods(['migrationExists'])
+            ->getMock();
+
         $migrationAvailabilityChecker->expects($this->atLeastOnce())->method('migrationExists')->with($ceMigrationsPath);
 
         $migrations = new Migrations($doctrineApplicationBuilder, $facts, $dbConfigFilePath, $migrationAvailabilityChecker);
@@ -293,7 +305,9 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
      */
     private function getDoctrineMock($runsAtLeastOnce, $callWith = null)
     {
-        $doctrineApplication = $this->getMock('DoctrineApplicationWrapper', ['run']);
+        $doctrineApplication = $this->getMockBuilder('DoctrineApplicationWrapper')
+            ->setMethods(['run'])
+            ->getMock();
 
         if ($runsAtLeastOnce && is_null($callWith)) {
             $doctrineApplication->expects($this->atLeastOnce())->method('run');
@@ -315,8 +329,11 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
      */
     private function getDoctrineStub($result = 0)
     {
-        $doctrineApplication = $this->getMock('DoctrineApplicationWrapper', ['run']);
-        $doctrineApplication->method('run')->will($this->returnValue($result));
+        $doctrineApplication = $this->getMockBuilder('DoctrineApplicationWrapper')
+            ->setMethods(['run'])
+            ->getMock();
+
+        $doctrineApplication->method('run')->willReturn($result);
 
         return $doctrineApplication;
     }
@@ -330,8 +347,11 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
      */
     private function getDoctrineApplicationBuilderStub($doctrineApplication)
     {
-        $doctrineApplicationBuilder = $this->getMock('DoctrineApplicationBuilder', ['build']);
-        $doctrineApplicationBuilder->method('build')->will($this->returnValue($doctrineApplication));
+        $doctrineApplicationBuilder = $this->getMockBuilder('DoctrineApplicationBuilder')
+            ->setMethods(['build'])
+            ->getMock();
+
+        $doctrineApplicationBuilder->method('build')->willReturn($doctrineApplication);
 
         return $doctrineApplicationBuilder;
     }
@@ -345,7 +365,10 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
      */
     private function getFactsStub($migrationPaths)
     {
-        $facts = $this->getMock('Facts', ['getMigrationPaths']);
+        $facts = $this->getMockBuilder('Facts')
+            ->setMethods(['getMigrationPaths'])
+            ->getMock();
+
         $facts->method('getMigrationPaths')->willReturn($migrationPaths);
 
         return $facts;
@@ -356,7 +379,10 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
      */
     private function getMigrationAvailabilityStub($ifMigrationsAvailable)
     {
-        $migrationAvailabilityChecker = $this->getMock('MigrationAvailabilityChecker', ['migrationExists']);
+        $migrationAvailabilityChecker = $this->getMockBuilder('MigrationAvailabilityChecker')
+            ->setMethods(['migrationExists'])
+            ->getMock();
+
         $migrationAvailabilityChecker->method('migrationExists')->willReturn($ifMigrationsAvailable);
 
         return $migrationAvailabilityChecker;
