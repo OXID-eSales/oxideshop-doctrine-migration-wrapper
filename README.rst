@@ -19,6 +19,12 @@ migration scripts suites within different eShop editions:
 Keep in mind that the migration suite is executed only when it is able to find
 **at least one** migration script.
 
+Branch Compatibility
+--------------------
+
+* master branch is compatible with OXID eShop compilation master
+* b-1.x branch is compatible with OXID eShop compilation 6.x
+
 Recommended way to update your OXID eShop
 -----------------------------------------
 
