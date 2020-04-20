@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/ ).
 
 ### Fixed
 - Made composer.json compatible with composer v2
+- Minimal versions for dependencies
 
 ## [2.1.3] - 2019-01-18
 

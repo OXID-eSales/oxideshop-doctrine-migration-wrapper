@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OXID eSales Doctrine Migration Wrapper.
  *
@@ -19,12 +20,19 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\DoctrineMigrationWrapper\Tests\Unit;
 
+use OxidEsales\DoctrineMigrationWrapper\DoctrineApplicationBuilder;
+use OxidEsales\DoctrineMigrationWrapper\MigrationAvailabilityChecker;
 use OxidEsales\DoctrineMigrationWrapper\Migrations;
+use OxidEsales\Facts\Facts;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 
-class MigrationsTest extends \PHPUnit_Framework_TestCase
+class MigrationsTest extends TestCase
 {
     /**
      * Check if Doctrine Application mock is called
@@ -114,7 +122,7 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
             'command' => $command
         ]);
 
-        $doctrineApplication = $this->getMock('DoctrineApplicationWrapper', ['run']);
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
         $doctrineApplication->expects($this->at(0))->method('run')->with($inputCE);
         $doctrineApplication->expects($this->at(1))->method('run')->with($inputPE);
         $doctrineApplication->expects($this->at(2))->method('run')->with($inputEE);
@@ -152,7 +160,7 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
             'command' => $command
         ]);
 
-        $doctrineApplication = $this->getMock('DoctrineApplicationWrapper', ['run']);
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
         $doctrineApplication->expects($this->once())->method('run')->with($inputEE);
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
@@ -179,7 +187,7 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
             'ee' => 'path_to_ee_migrations',
         ];
 
-        $doctrineApplication = $this->getMock('DoctrineApplicationWrapper', ['run']);
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
         $doctrineApplication->expects($this->never())->method('run');
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
@@ -231,7 +239,7 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
 
         $facts = $this->getFactsStub(['ce' => $ceMigrationsPath]);
 
-        $migrationAvailabilityChecker = $this->getMock('MigrationAvailabilityChecker', ['migrationExists']);
+        $migrationAvailabilityChecker = $this->createPartialMock(MigrationAvailabilityChecker::class, ['migrationExists']);
         $migrationAvailabilityChecker->expects($this->atLeastOnce())->method('migrationExists')->with($ceMigrationsPath);
 
         $migrations = new Migrations($doctrineApplicationBuilder, $facts, $dbConfigFilePath, $migrationAvailabilityChecker);
@@ -293,7 +301,7 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
      */
     private function getDoctrineMock($runsAtLeastOnce, $callWith = null)
     {
-        $doctrineApplication = $this->getMock('DoctrineApplicationWrapper', ['run']);
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
 
         if ($runsAtLeastOnce && is_null($callWith)) {
             $doctrineApplication->expects($this->atLeastOnce())->method('run');
@@ -315,7 +323,7 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
      */
     private function getDoctrineStub($result = 0)
     {
-        $doctrineApplication = $this->getMock('DoctrineApplicationWrapper', ['run']);
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
         $doctrineApplication->method('run')->will($this->returnValue($result));
 
         return $doctrineApplication;
@@ -330,7 +338,7 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
      */
     private function getDoctrineApplicationBuilderStub($doctrineApplication)
     {
-        $doctrineApplicationBuilder = $this->getMock('DoctrineApplicationBuilder', ['build']);
+        $doctrineApplicationBuilder = $this->createPartialMock(DoctrineApplicationBuilder::class, ['build']);
         $doctrineApplicationBuilder->method('build')->will($this->returnValue($doctrineApplication));
 
         return $doctrineApplicationBuilder;
@@ -345,7 +353,7 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
      */
     private function getFactsStub($migrationPaths)
     {
-        $facts = $this->getMock('Facts', ['getMigrationPaths']);
+        $facts = $this->createPartialMock(Facts::class, ['getMigrationPaths']);
         $facts->method('getMigrationPaths')->willReturn($migrationPaths);
 
         return $facts;
@@ -356,7 +364,7 @@ class MigrationsTest extends \PHPUnit_Framework_TestCase
      */
     private function getMigrationAvailabilityStub($ifMigrationsAvailable)
     {
-        $migrationAvailabilityChecker = $this->getMock('MigrationAvailabilityChecker', ['migrationExists']);
+        $migrationAvailabilityChecker = $this->createPartialMock(MigrationAvailabilityChecker::class, ['migrationExists']);
         $migrationAvailabilityChecker->method('migrationExists')->willReturn($ifMigrationsAvailable);
 
         return $migrationAvailabilityChecker;

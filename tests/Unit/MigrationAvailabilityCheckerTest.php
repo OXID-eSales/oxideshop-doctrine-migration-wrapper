@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OXID eSales Doctrine Migration Wrapper.
  *
@@ -19,13 +20,15 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\DoctrineMigrationWrapper\Tests\Unit;
 
 use org\bovigo\vfs\vfsStream;
-
 use OxidEsales\DoctrineMigrationWrapper\MigrationAvailabilityChecker;
+use PHPUnit\Framework\TestCase;
 
-class MigrationAvailabilityCheckerTest extends \PHPUnit_Framework_TestCase
+class MigrationAvailabilityCheckerTest extends TestCase
 {
     public function testReturnFalseWhenFileDoesNotExist()
     {
