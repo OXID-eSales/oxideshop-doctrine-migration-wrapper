@@ -28,13 +28,13 @@ use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
 use OxidEsales\Facts\Config\ConfigFile;
 use PHPUnit\Framework\TestCase;
 
-class MigrationsTest extends TestCase
+final class MigrationsTest extends TestCase
 {
     /** @var ConfigFile */
-    private $configFile = null;
+    private $configFile;
 
     /** @var EnvironmentPreparator */
-    private $environmentPreparator = null;
+    private $environmentPreparator;
 
     public function __construct()
     {
@@ -42,7 +42,7 @@ class MigrationsTest extends TestCase
         parent::__construct();
     }
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -50,7 +50,7 @@ class MigrationsTest extends TestCase
         $this->configFile = new ConfigFile();
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
 
@@ -64,13 +64,17 @@ class MigrationsTest extends TestCase
      * - it is possible to run two migrations in a row
      * - Migration Builder actually works
      */
-    public function testMigrateSuccess()
+    public function testMigrateSuccess(): void
     {
         $migration = (new MigrationsBuilder())->build();
         $migration->execute('migrations:migrate');
 
         $databaseName = $this->configFile->dbName;
-        $databaseConnection = new \PDO('mysql:host=' . $this->configFile->dbHost, $this->configFile->dbUser, $this->configFile->dbPwd);
+        $databaseConnection = new \PDO(
+            'mysql:host=' . $this->configFile->dbHost,
+            $this->configFile->dbUser,
+            $this->configFile->dbPwd
+        );
 
         $result = $databaseConnection->query(
             "SELECT id as entries FROM `$databaseName`.`test_doctrine_migration_wrapper`"

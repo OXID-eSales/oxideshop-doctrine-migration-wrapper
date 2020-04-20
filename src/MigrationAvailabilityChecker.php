@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OXID eSales Doctrine Migration Wrapper.
  *
@@ -19,6 +20,8 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\DoctrineMigrationWrapper;
 
 class MigrationAvailabilityChecker
@@ -32,7 +35,8 @@ class MigrationAvailabilityChecker
      *
      * @return bool
      */
-    public function migrationExists($pathToConfiguration) {
+    public function migrationExists($pathToConfiguration)
+    {
         if (!is_file($pathToConfiguration)) {
             return false;
         }

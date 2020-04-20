@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OXID eSales Doctrine Migration Wrapper.
  *
@@ -18,6 +19,8 @@
  * @link      http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
  */
+
+declare(strict_types=1);
 
 namespace OxidEsales\DoctrineMigrationWrapper;
 

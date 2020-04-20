@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OXID eSales Doctrine Migration Wrapper.
  *
@@ -18,6 +19,8 @@
  * @link      http://www.oxid-esales.com
  * @copyright (C) OXID eSales AG 2003-2017
  */
+
+declare(strict_types=1);
 
 namespace OxidEsales\DoctrineMigrationWrapper;
 
@@ -39,13 +42,13 @@ foreach ($autoloadFiles as $autoloadFile) {
 }
 
 if (!$autoloadFileExist) {
-    exit("Autoload file was not found!");
+    exit('Autoload file was not found!');
 }
 
 $migrationsBuilder = new \OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder();
 $migrations = $migrationsBuilder->build();
 
-$command = isset($argv[1]) ? $argv[1] : null;
-$edition = isset($argv[2]) ? $argv[2] : null;
+$command = $argv[1] ?? null;
+$edition = $argv[2] ?? null;
 
 exit($migrations->execute($command, $edition));

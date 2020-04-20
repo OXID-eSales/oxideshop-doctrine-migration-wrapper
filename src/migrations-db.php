@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OXID eSales Doctrine Migration Wrapper.
  *
@@ -19,9 +20,13 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\DoctrineMigrationWrapper;
 
-$facts = new \OxidEsales\Facts\Facts();
+use OxidEsales\Facts\Facts;
+
+$facts = new Facts();
 
 return [
     'dbname' => $facts->getDatabaseName(),

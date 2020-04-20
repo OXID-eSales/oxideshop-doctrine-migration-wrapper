@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OXID eSales Doctrine Migration Wrapper.
  *
@@ -19,8 +20,11 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\DoctrineMigrationWrapper;
 
+use OxidEsales\Facts\Facts;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\Output;
 
@@ -31,10 +35,10 @@ use Symfony\Component\Console\Output\Output;
  */
 class Migrations
 {
-    /** @var  \OxidEsales\DoctrineMigrationWrapper\DoctrineApplicationBuilder $doctrineApplicationBuilder */
+    /** @var  DoctrineApplicationBuilder $doctrineApplicationBuilder */
     private $doctrineApplicationBuilder;
 
-    /** @var  \OxidEsales\Facts\Facts */
+    /** @var  Facts */
     private $facts;
 
     /** @var  \OxidEsales\DoctrineMigrationWrapper\$MigrationAvailabilityChecker */
@@ -54,8 +58,8 @@ class Migrations
     /**
      * Sets all needed dependencies.
      *
-     * @param \OxidEsales\DoctrineMigrationWrapper\DoctrineApplicationBuilder $doctrineApplicationBuilder
-     * @param \OxidEsales\Facts\Facts $facts
+     * @param DoctrineApplicationBuilder $doctrineApplicationBuilder
+     * @param Facts $facts
      * @param string $dbFilePath
      * @param \OxidEsales\DoctrineMigrationWrapper\$MigrationAvailabilityChecker $migrationAvailabilityChecker
      */
@@ -89,7 +93,6 @@ class Migrations
         $migrationPaths = $this->getMigrationPaths($edition);
 
         foreach ($migrationPaths as $migrationEdition => $migrationPath) {
-
             $doctrineApplication = $this->doctrineApplicationBuilder->build();
 
             $input = $this->formDoctrineInput($command, $migrationPath, $this->dbFilePath);
@@ -114,15 +117,14 @@ class Migrations
      *
      * @return ArrayInput
      */
-    private function formDoctrineInput($command, $migrationPath, $dbFilePath)
+    private function formDoctrineInput($command, $migrationPath, $dbFilePath): ArrayInput
     {
-        $input = new ArrayInput([
+        return new ArrayInput([
             '--configuration' => $migrationPath,
             '--db-configuration' => $dbFilePath,
             '-n' => true,
             'command' => !empty($command) ? $command : self::STATUS_COMMAND,
         ]);
-        return $input;
     }
 
     /**

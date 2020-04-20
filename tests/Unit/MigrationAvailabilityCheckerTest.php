@@ -28,15 +28,15 @@ use org\bovigo\vfs\vfsStream;
 use OxidEsales\DoctrineMigrationWrapper\MigrationAvailabilityChecker;
 use PHPUnit\Framework\TestCase;
 
-class MigrationAvailabilityCheckerTest extends TestCase
+final class MigrationAvailabilityCheckerTest extends TestCase
 {
-    public function testReturnFalseWhenFileDoesNotExist()
+    public function testReturnFalseWhenFileDoesNotExist(): void
     {
         $availabilityChecker = new MigrationAvailabilityChecker();
         $this->assertFalse($availabilityChecker->migrationExists('some_not_existing_file'));
     }
 
-    public function testReturnTrueWhenMigrationExist()
+    public function testReturnTrueWhenMigrationExist(): void
     {
         $structure = [
             'migration' => [
@@ -55,7 +55,7 @@ class MigrationAvailabilityCheckerTest extends TestCase
         $this->assertTrue($availabilityChecker->migrationExists($pathToMigrationConfigurationFile));
     }
 
-    public function testReturnFalseWhenNoMigrationsExist()
+    public function testReturnFalseWhenNoMigrationsExist(): void
     {
         $structure = [
             'migration' => [
@@ -72,7 +72,7 @@ class MigrationAvailabilityCheckerTest extends TestCase
         $this->assertFalse($availabilityChecker->migrationExists($pathToMigrationConfigurationFile));
     }
 
-    public function testReturnFalseWhenGitKeepExist()
+    public function testReturnFalseWhenGitKeepExist(): void
     {
         $structure = [
             'migration' => [

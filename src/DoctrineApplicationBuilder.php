@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: saulius stasiukaitis
@@ -6,7 +7,11 @@
  * Time: 2:23 PM
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\DoctrineMigrationWrapper;
+
+use Symfony\Component\Console\Application;
 
 class DoctrineApplicationBuilder
 {
@@ -18,7 +23,7 @@ class DoctrineApplicationBuilder
      * second run with PE migrations
      * both runs would take path to CE migrations.
      *
-     * @return \Symfony\Component\Console\Application
+     * @return Application
      */
     public function build()
     {

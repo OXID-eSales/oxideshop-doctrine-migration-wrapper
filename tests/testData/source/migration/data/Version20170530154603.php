@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of OXID eSales Doctrine Migration Wrapper.
  *
@@ -19,6 +20,8 @@
  * @copyright (C) OXID eSales AG 2003-2017
  */
 
+declare(strict_types=1);
+
 namespace OxidEsales\DoctrineMigrationWrapper\source\Migrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
@@ -32,16 +35,13 @@ class Version20170530154603 extends AbstractMigration
     /**
      * @param Schema $schema
      */
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
-        $this->addSql("
-            CREATE TABLE `test_doctrine_migration_wrapper` (
-            `id` char(255) NOT NULL
-            );
-        ");
-
+        $this->addSql('CREATE TABLE `test_doctrine_migration_wrapper` (`id` char(255) NOT NULL);');
         $this->addSql("INSERT INTO `test_doctrine_migration_wrapper` (`id`) VALUES ('shop_migration');");
     }
 
-    public function down(Schema $schema) {}
+    public function down(Schema $schema): void
+    {
+    }
 }
