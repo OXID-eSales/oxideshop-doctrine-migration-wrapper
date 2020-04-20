@@ -30,6 +30,7 @@ use OxidEsales\DoctrineMigrationWrapper\Migrations;
 use OxidEsales\Facts\Facts;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
+use Prophecy\Argument;
 use Symfony\Component\Console\Input\ArrayInput;
 
 class MigrationsTest extends TestCase
@@ -289,6 +290,28 @@ class MigrationsTest extends TestCase
         $migrations = new Migrations($doctrineApplicationBuilder, $facts, $pathToDbConfig, $migrationAvailabilityChecker);
 
         $this->assertSame($errorCode, $migrations->execute('migrations:migrate'));
+    }
+
+    public function testExecuteWithEmptyInputWillCallDefaultCommand(): void
+    {
+        $application = $this->prophesize(Application::class);
+        $applicationBuilder = $this->prophesize(DoctrineApplicationBuilder::class);
+        $applicationBuilder->build()->willReturn($application);
+        $facts = $this->prophesize(Facts::class);
+        $facts->getMigrationPaths()->willReturn(['something']);
+        $checker = $this->prophesize(MigrationAvailabilityChecker::class);
+
+        (new Migrations($applicationBuilder->reveal(), $facts->reveal(), '', $checker->reveal()))
+            ->execute('');
+
+        $application->run(
+            Argument::that(
+                static function (ArrayInput $input) {
+                    return $input->getParameterOption('command') === 'migrations:status';
+                }
+            ),
+            Argument::any()
+        )->shouldBeCalledOnce();
     }
 
     /**

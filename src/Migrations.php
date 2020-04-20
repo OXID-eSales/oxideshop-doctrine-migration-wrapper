@@ -46,6 +46,8 @@ class Migrations
     /** Command for doctrine to run database migrations. */
     const MIGRATE_COMMAND = 'migrations:migrate';
 
+    private const STATUS_COMMAND = 'migrations:status';
+
     /** @var Output Add a possibility to provide a custom output handler */
     private $output = null;
 
@@ -118,7 +120,7 @@ class Migrations
             '--configuration' => $migrationPath,
             '--db-configuration' => $dbFilePath,
             '-n' => true,
-            'command' => $command
+            'command' => !empty($command) ? $command : self::STATUS_COMMAND,
         ]);
         return $input;
     }
