@@ -23,6 +23,7 @@ Branch Compatibility
 --------------------
 
 * master branch is compatible with OXID eShop compilation master
+* b-2.x branch is compatible with OXID eShop compilation 6.2.x
 * b-1.x branch is compatible with OXID eShop compilation 6.x
 
 Recommended way to update your OXID eShop

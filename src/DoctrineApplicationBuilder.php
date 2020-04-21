@@ -1,10 +1,8 @@
 <?php
 
 /**
- * Created by PhpStorm.
- * User: saulius stasiukaitis
- * Date: 5/24/2017
- * Time: 2:23 PM
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
  */
 
 declare(strict_types=1);
