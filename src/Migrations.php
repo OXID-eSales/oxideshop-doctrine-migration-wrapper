@@ -38,7 +38,7 @@ class Migrations
     private const STATUS_COMMAND = 'migrations:status';
 
     /** @var Output Add a possibility to provide a custom output handler */
-    private $output = null;
+    private $output;
 
     /**
      * Sets all needed dependencies.
@@ -46,7 +46,7 @@ class Migrations
      * @param DoctrineApplicationBuilder $doctrineApplicationBuilder
      * @param Facts $facts
      * @param string $dbFilePath
-     * @param \OxidEsales\DoctrineMigrationWrapper\$MigrationAvailabilityChecker $migrationAvailabilityChecker
+     * @param \OxidEsales\DoctrineMigrationWrapper\MigrationAvailabilityChecker $migrationAvailabilityChecker
      */
     public function __construct($doctrineApplicationBuilder, $facts, $dbFilePath, $migrationAvailabilityChecker)
     {

@@ -21,6 +21,25 @@ use Symfony\Component\Console\Input\ArrayInput;
 
 final class MigrationsTest extends TestCase
 {
+    /** @var int */
+    private $errorReportingLevel;
+
+    /**
+     * @param null $name
+     * @param array $data
+     * @param string $dataName
+     */
+    public function __construct($name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+        $this->fixPhpUnit65Php74Compatibility();
+    }
+
+    public function __destruct()
+    {
+        $this->restoreErrorReportingLevel();
+    }
+
     /**
      * Check if Doctrine Application mock is called
      * when migrations are available.
@@ -419,5 +438,18 @@ final class MigrationsTest extends TestCase
         $migrationAvailabilityChecker->method('migrationExists')->willReturn($ifMigrationsAvailable);
 
         return $migrationAvailabilityChecker;
+    }
+
+    /** @todo remove method if using PHPUnit 7.5.15 or higher */
+    private function fixPhpUnit65Php74Compatibility(): void
+    {
+        $this->errorReportingLevel = error_reporting();
+        error_reporting(E_ALL & ~E_DEPRECATED);
+    }
+
+    /** @todo remove method if using PHPUnit 7.5.15 or higher */
+    private function restoreErrorReportingLevel(): void
+    {
+        error_reporting($this->errorReportingLevel);
     }
 }
