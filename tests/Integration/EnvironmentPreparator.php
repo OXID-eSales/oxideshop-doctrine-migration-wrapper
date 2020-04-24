@@ -1,25 +1,29 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: saulius stasiukaitis
- * Date: 6/6/2017
- * Time: 10:53 AM
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
  */
+
+declare(strict_types=1);
 
 namespace OxidEsales\DoctrineMigrationWrapper\Tests\Integration;
 
 use OxidEsales\Facts\Config\ConfigFile;
+use PDO;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Setup database and file system for integration test.
  */
-class EnvironmentPreparator
+final class EnvironmentPreparator
 {
     /** @var ConfigFile */
-    private $configFile = null;
+    private $configFile;
+    /** @var PDO */
+    private $databaseConnection;
 
-    public function setupEnvironment()
+    public function setupEnvironment(): void
     {
         $this->copySystemFiles();
         $this->configFile = new ConfigFile();
@@ -27,25 +31,29 @@ class EnvironmentPreparator
         $this->setUpDatabase();
     }
 
-    public function cleanEnvironment()
+    public function cleanEnvironment(): void
     {
         $this->destroyDatabase();
         $this->closeDatabaseConnection();
         $this->deleteSystemFiles();
     }
 
-    private function openDatabaseConnection()
+    private function openDatabaseConnection(): void
     {
-        $this->databaseConnection = new \PDO('mysql:host=' . $this->configFile->dbHost, $this->configFile->dbUser, $this->configFile->dbPwd);
+        $this->databaseConnection = new PDO(
+            'mysql:host=' . $this->configFile->dbHost,
+            $this->configFile->dbUser,
+            $this->configFile->dbPwd
+        );
     }
 
-    private function setUpDatabase()
+    private function setUpDatabase(): void
     {
         $databaseName = $this->configFile->dbName;
-        $this->databaseConnection->query("CREATE DATABASE `$databaseName`");
+        $this->databaseConnection->exec("CREATE DATABASE `$databaseName`");
     }
 
-    private function copySystemFiles()
+    private function copySystemFiles(): void
     {
         $fileSystem = new Filesystem();
         $pathFromTestData = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', 'testData']);
@@ -53,20 +61,20 @@ class EnvironmentPreparator
         $fileSystem->mirror($pathFromTestData, $pathToTestData);
     }
 
-    private function destroyDatabase()
+    private function destroyDatabase(): void
     {
         $databaseName = $this->configFile->dbName;
-        $this->databaseConnection->query("DROP DATABASE `$databaseName`");
+        $this->databaseConnection->exec("DROP DATABASE `$databaseName`");
     }
 
-    private function deleteSystemFiles()
+    private function deleteSystemFiles(): void
     {
         $fileSystem = new Filesystem();
         $pathToTestData = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'source']);
         $fileSystem->remove($pathToTestData);
     }
 
-    private function closeDatabaseConnection()
+    private function closeDatabaseConnection(): void
     {
         $this->databaseConnection = null;
     }

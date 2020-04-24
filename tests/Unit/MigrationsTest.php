@@ -1,36 +1,34 @@
 <?php
+
 /**
- * This file is part of OXID eSales Doctrine Migration Wrapper.
- *
- * OXID eSales Doctrine Migration Wrapper is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * OXID eSales Doctrine Migration Wrapper is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with OXID eSales Doctrine Migration Wrapper. If not, see <http://www.gnu.org/licenses/>.
- *
- * @link      http://www.oxid-esales.com
- * @copyright (C) OXID eSales AG 2003-2017
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
  */
+
+declare(strict_types=1);
 
 namespace OxidEsales\DoctrineMigrationWrapper\Tests\Unit;
 
+use OxidEsales\DoctrineMigrationWrapper\DoctrineApplicationBuilder;
+use OxidEsales\DoctrineMigrationWrapper\MigrationAvailabilityChecker;
 use OxidEsales\DoctrineMigrationWrapper\Migrations;
+use OxidEsales\Facts\Facts;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
+use Symfony\Component\Console\Application;
+use Prophecy\Argument;
 use Symfony\Component\Console\Input\ArrayInput;
 
-class MigrationsTest extends \PHPUnit\Framework\TestCase
+final class MigrationsTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * Check if Doctrine Application mock is called
      * when migrations are available.
      */
-    public function testCallsDoctrineMigrations()
+    public function testCallsDoctrineMigrations(): void
     {
         $doctrineApplication = $this->getDoctrineMock(true);
 
@@ -42,7 +40,12 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
 
-        $migrations = new Migrations($doctrineApplicationBuilder, $facts, $pathToDbConfig, $migrationAvailabilityChecker);
+        $migrations = new Migrations(
+            $doctrineApplicationBuilder,
+            $facts,
+            $pathToDbConfig,
+            $migrationAvailabilityChecker
+        );
         $this->assertSame(0, $migrations->execute('migrations:migrate'));
     }
 
@@ -50,7 +53,7 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
      * Check if Doctrine Application mock is called with right parameters
      * when migrations are available.
      */
-    public function testExecuteCEMigration()
+    public function testExecuteCEMigration(): void
     {
         $command = 'migrations:migrate';
         $dbConfigFilePath = 'path_to_DB_config_file';
@@ -71,7 +74,12 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
 
-        $migrations = new Migrations($doctrineApplicationBuilder, $facts, $dbConfigFilePath, $migrationAvailabilityChecker);
+        $migrations = new Migrations(
+            $doctrineApplicationBuilder,
+            $facts,
+            $dbConfigFilePath,
+            $migrationAvailabilityChecker
+        );
 
         $migrations->execute($command);
     }
@@ -80,7 +88,7 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
      * Tests that all migrations are called what's defined in a Shop facts
      * with an order from Facts.
      */
-    public function testExecuteAllMigrations()
+    public function testExecuteAllMigrations(): void
     {
         $command = 'migrations:migrate';
         $dbConfigFilePath = 'path_to_DB_config_file';
@@ -114,10 +122,7 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
             'command' => $command
         ]);
 
-        $doctrineApplication = $this->getMockBuilder('DoctrineApplicationWrapper')
-            ->setMethods(['run'])
-            ->getMock();
-
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
         $doctrineApplication->expects($this->at(0))->method('run')->with($inputCE);
         $doctrineApplication->expects($this->at(1))->method('run')->with($inputPE);
         $doctrineApplication->expects($this->at(2))->method('run')->with($inputEE);
@@ -128,7 +133,12 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
 
-        $migrations = new Migrations($doctrineApplicationBuilder, $facts, $dbConfigFilePath, $migrationAvailabilityChecker);
+        $migrations = new Migrations(
+            $doctrineApplicationBuilder,
+            $facts,
+            $dbConfigFilePath,
+            $migrationAvailabilityChecker
+        );
 
         $migrations->execute($command);
     }
@@ -137,7 +147,7 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
      * Tests that only requested migration is called even when more migrations exist.
      * Does testing by calling migration in different case sensitivity.
      */
-    public function testExecuteOnlyRequestedMigration()
+    public function testExecuteOnlyRequestedMigration(): void
     {
         $command = 'migrations:migrate';
         $dbConfigFilePath = 'path_to_DB_config_file';
@@ -155,10 +165,7 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
             'command' => $command
         ]);
 
-        $doctrineApplication = $this->getMockBuilder('DoctrineApplicationWrapper')
-            ->setMethods(['run'])
-            ->getMock();
-
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
         $doctrineApplication->expects($this->once())->method('run')->with($inputEE);
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
@@ -167,7 +174,12 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
 
-        $migrations = new Migrations($doctrineApplicationBuilder, $facts, $dbConfigFilePath, $migrationAvailabilityChecker);
+        $migrations = new Migrations(
+            $doctrineApplicationBuilder,
+            $facts,
+            $dbConfigFilePath,
+            $migrationAvailabilityChecker
+        );
 
         $migrations->execute($command, 'Ee');
     }
@@ -175,7 +187,7 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that no error appears when no migrations exist for requested edition.
      */
-    public function testNoErrorWhenNoMigrationExistForRequestedEdition()
+    public function testNoErrorWhenNoMigrationExistForRequestedEdition(): void
     {
         $command = 'migrations:migrate';
         $dbConfigFilePath = 'path_to_DB_config_file';
@@ -185,10 +197,7 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
             'ee' => 'path_to_ee_migrations',
         ];
 
-        $doctrineApplication = $this->getMockBuilder('DoctrineApplicationWrapper')
-            ->setMethods(['run'])
-            ->getMock();
-
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
         $doctrineApplication->expects($this->never())->method('run');
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
@@ -197,7 +206,12 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
 
-        $migrations = new Migrations($doctrineApplicationBuilder, $facts, $dbConfigFilePath, $migrationAvailabilityChecker);
+        $migrations = new Migrations(
+            $doctrineApplicationBuilder,
+            $facts,
+            $dbConfigFilePath,
+            $migrationAvailabilityChecker
+        );
 
         $migrations->execute($command, 'PR');
     }
@@ -206,7 +220,7 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
      * Check if Doctrine Application mock is NOT called
      * when migrations are NOT available.
      */
-    public function testSkipMigrationWhenItDoesNotExist()
+    public function testSkipMigrationWhenItDoesNotExist(): void
     {
         $command = 'migrations:migrate';
         $dbConfigFilePath = 'path_to_DB_config_file';
@@ -220,7 +234,12 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(false);
 
-        $migrations = new Migrations($doctrineApplicationBuilder, $facts, $dbConfigFilePath, $migrationAvailabilityChecker);
+        $migrations = new Migrations(
+            $doctrineApplicationBuilder,
+            $facts,
+            $dbConfigFilePath,
+            $migrationAvailabilityChecker
+        );
 
         $migrations->execute($command);
     }
@@ -228,7 +247,7 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
     /**
      * Check if migrations availability checker is called with a right parameter.
      */
-    public function testMigrationAvailabilityCheckerCalledWithCorrectPath()
+    public function testMigrationAvailabilityCheckerCalledWithCorrectPath(): void
     {
         $command = 'migrations:migrate';
         $dbConfigFilePath = 'path_to_DB_config_file';
@@ -240,13 +259,20 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
 
         $facts = $this->getFactsStub(['ce' => $ceMigrationsPath]);
 
-        $migrationAvailabilityChecker = $this->getMockBuilder('MigrationAvailabilityChecker')
-            ->setMethods(['migrationExists'])
-            ->getMock();
+        $migrationAvailabilityChecker = $this->createPartialMock(
+            MigrationAvailabilityChecker::class,
+            ['migrationExists']
+        );
+        $migrationAvailabilityChecker->expects($this->atLeastOnce())
+            ->method('migrationExists')
+            ->with($ceMigrationsPath);
 
-        $migrationAvailabilityChecker->expects($this->atLeastOnce())->method('migrationExists')->with($ceMigrationsPath);
-
-        $migrations = new Migrations($doctrineApplicationBuilder, $facts, $dbConfigFilePath, $migrationAvailabilityChecker);
+        $migrations = new Migrations(
+            $doctrineApplicationBuilder,
+            $facts,
+            $dbConfigFilePath,
+            $migrationAvailabilityChecker
+        );
 
         $migrations->execute($command);
     }
@@ -254,7 +280,7 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
     /**
      * Check if generates new migration when no migration exist in a folder.
      */
-    public function testRunGenerateMigrationCommandEvenIfNoMigrationExist()
+    public function testRunGenerateMigrationCommandEvenIfNoMigrationExist(): void
     {
         $command = 'migrations:generate';
         $dbConfigFilePath = 'path_to_DB_config_file';
@@ -268,7 +294,12 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(false);
 
-        $migrations = new Migrations($doctrineApplicationBuilder, $facts, $dbConfigFilePath, $migrationAvailabilityChecker);
+        $migrations = new Migrations(
+            $doctrineApplicationBuilder,
+            $facts,
+            $dbConfigFilePath,
+            $migrationAvailabilityChecker
+        );
 
         $migrations->execute($command);
     }
@@ -276,7 +307,7 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
     /**
      * Test to check if error code is passed from Doctrine to upper caller.
      */
-    public function testReturnErrorCodeWhenMigrationFail()
+    public function testReturnErrorCodeWhenMigrationFail(): void
     {
         $errorCode = 1;
 
@@ -290,28 +321,50 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
 
-        $migrations = new Migrations($doctrineApplicationBuilder, $facts, $pathToDbConfig, $migrationAvailabilityChecker);
+        $migrations = new Migrations(
+            $doctrineApplicationBuilder,
+            $facts,
+            $pathToDbConfig,
+            $migrationAvailabilityChecker
+        );
 
         $this->assertSame($errorCode, $migrations->execute('migrations:migrate'));
     }
 
-    /**
-     * Create mock for Doctrine Application.
-     *
-     * @param bool $runsAtLeastOnce
-     * @param string $callWith
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
-    private function getDoctrineMock($runsAtLeastOnce, $callWith = null)
+    public function testExecuteWithEmptyInputWillCallDefaultCommand(): void
     {
-        $doctrineApplication = $this->getMockBuilder('DoctrineApplicationWrapper')
-            ->setMethods(['run'])
-            ->getMock();
+        $application = $this->prophesize(Application::class);
+        $applicationBuilder = $this->prophesize(DoctrineApplicationBuilder::class);
+        $applicationBuilder->build()->willReturn($application);
+        $facts = $this->prophesize(Facts::class);
+        $facts->getMigrationPaths()->willReturn(['something']);
+        $checker = $this->prophesize(MigrationAvailabilityChecker::class);
+
+        (new Migrations($applicationBuilder->reveal(), $facts->reveal(), '', $checker->reveal()))
+            ->execute('');
+
+        $application->run(
+            Argument::that(
+                static function (ArrayInput $input) {
+                    return $input->getParameterOption('command') === 'migrations:status';
+                }
+            ),
+            Argument::any()
+        )->shouldBeCalledOnce();
+    }
+
+    /**
+     * @param $runsAtLeastOnce
+     * @param null $callWith
+     * @return MockObject|Application
+     */
+    private function getDoctrineMock($runsAtLeastOnce, $callWith = null): MockObject
+    {
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
 
         if ($runsAtLeastOnce && is_null($callWith)) {
             $doctrineApplication->expects($this->atLeastOnce())->method('run');
-        } elseif($runsAtLeastOnce) {
+        } elseif ($runsAtLeastOnce) {
             $doctrineApplication->expects($this->atLeastOnce())->method('run')->with($callWith);
         } else {
             $doctrineApplication->expects($this->never())->method('run');
@@ -321,68 +374,51 @@ class MigrationsTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Stub 3rd party dependency.
-     *
-     * @param int $result what error code to return.
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @param int $result
+     * @return MockObject|Application
      */
-    private function getDoctrineStub($result = 0)
+    private function getDoctrineStub($result = null): MockObject
     {
-        $doctrineApplication = $this->getMockBuilder('DoctrineApplicationWrapper')
-            ->setMethods(['run'])
-            ->getMock();
-
-        $doctrineApplication->method('run')->willReturn($result);
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
+        $doctrineApplication->method('run')->willReturn($result ? 1 : 0);
 
         return $doctrineApplication;
     }
 
     /**
-     * Stub builder to get needed application mock.
-     *
      * @param $doctrineApplication
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject|DoctrineApplicationBuilder
      */
-    private function getDoctrineApplicationBuilderStub($doctrineApplication)
+    private function getDoctrineApplicationBuilderStub($doctrineApplication): MockObject
     {
-        $doctrineApplicationBuilder = $this->getMockBuilder('DoctrineApplicationBuilder')
-            ->setMethods(['build'])
-            ->getMock();
-
+        $doctrineApplicationBuilder = $this->createPartialMock(DoctrineApplicationBuilder::class, ['build']);
         $doctrineApplicationBuilder->method('build')->willReturn($doctrineApplication);
 
         return $doctrineApplicationBuilder;
     }
 
     /**
-     * Stub Facts to get paths needed for tests.
-     *
-     * @param array $migrationPaths paths to migrations
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @param $migrationPaths
+     * @return MockObject|Facts
      */
-    private function getFactsStub($migrationPaths)
+    private function getFactsStub($migrationPaths): MockObject
     {
-        $facts = $this->getMockBuilder('Facts')
-            ->setMethods(['getMigrationPaths'])
-            ->getMock();
-
+        $facts = $this->createPartialMock(Facts::class, ['getMigrationPaths']);
         $facts->method('getMigrationPaths')->willReturn($migrationPaths);
 
         return $facts;
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @param $ifMigrationsAvailable
+     * @return MockObject
      */
-    private function getMigrationAvailabilityStub($ifMigrationsAvailable)
+    private function getMigrationAvailabilityStub($ifMigrationsAvailable): MockObject
     {
-        $migrationAvailabilityChecker = $this->getMockBuilder('MigrationAvailabilityChecker')
-            ->setMethods(['migrationExists'])
-            ->getMock();
-
+        $migrationAvailabilityChecker = $this->createPartialMock(
+            MigrationAvailabilityChecker::class,
+            ['migrationExists']
+        );
         $migrationAvailabilityChecker->method('migrationExists')->willReturn($ifMigrationsAvailable);
 
         return $migrationAvailabilityChecker;

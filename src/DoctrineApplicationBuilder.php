@@ -1,15 +1,17 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: saulius stasiukaitis
- * Date: 5/24/2017
- * Time: 2:23 PM
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
  */
+
+declare(strict_types=1);
 
 namespace OxidEsales\DoctrineMigrationWrapper;
 
 use Doctrine\Migrations\Tools\Console\ConsoleRunner;
-    
+use Symfony\Component\Console\Application;
+
 class DoctrineApplicationBuilder
 {
     /**
@@ -20,7 +22,7 @@ class DoctrineApplicationBuilder
      * second run with PE migrations
      * both runs would take path to CE migrations.
      *
-     * @return \Symfony\Component\Console\Application
+     * @return Application
      */
     public function build()
     {
