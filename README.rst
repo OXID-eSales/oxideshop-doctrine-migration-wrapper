@@ -15,6 +15,7 @@ migration scripts suites within different eShop editions:
 * **Enterprise edition migrations** - executed when eShop has Enterprise
   edition;
 * **Project specific migrations** - executed always;
+* **Module specific migrations** - executed always;
 
 Keep in mind that the migration suite is executed only when it is able to find
 **at least one** migration script.
