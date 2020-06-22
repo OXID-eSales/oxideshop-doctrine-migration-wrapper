@@ -70,8 +70,10 @@ final class EnvironmentPreparator
     private function deleteSystemFiles(): void
     {
         $fileSystem = new Filesystem();
-        $pathToTestData = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'source']);
-        $fileSystem->remove($pathToTestData);
+        $pathToSourceTestData = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'source']);
+        $pathToVarTestData = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', 'var']);
+        $fileSystem->remove($pathToSourceTestData);
+        $fileSystem->remove($pathToVarTestData);
     }
 
     private function closeDatabaseConnection(): void
