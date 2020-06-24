@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\DoctrineMigrationWrapper;
 
-use OxidEsales\Facts\Facts;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\Output;
 
@@ -22,9 +21,6 @@ class Migrations
 {
     /** @var  DoctrineApplicationBuilder $doctrineApplicationBuilder */
     private $doctrineApplicationBuilder;
-
-    /** @var  Facts */
-    private $facts;
 
     /** @var  \OxidEsales\DoctrineMigrationWrapper\$MigrationAvailabilityChecker */
     private $migrationAvailabilityChecker;
@@ -41,19 +37,27 @@ class Migrations
     private $output;
 
     /**
-     * Sets all needed dependencies.
-     *
-     * @param DoctrineApplicationBuilder $doctrineApplicationBuilder
-     * @param Facts $facts
-     * @param string $dbFilePath
-     * @param \OxidEsales\DoctrineMigrationWrapper\MigrationAvailabilityChecker $migrationAvailabilityChecker
+     * @var MigrationsPathProvider
      */
-    public function __construct($doctrineApplicationBuilder, $facts, $dbFilePath, $migrationAvailabilityChecker)
-    {
+    private $migrationsPathProvider;
+
+    /**
+     *
+     * @param $doctrineApplicationBuilder
+     * @param $dbFilePath
+     * @param $migrationAvailabilityChecker
+     * @param $migrationsPathProvider
+     */
+    public function __construct(
+        $doctrineApplicationBuilder,
+        $dbFilePath,
+        $migrationAvailabilityChecker,
+        $migrationsPathProvider
+    ) {
         $this->doctrineApplicationBuilder = $doctrineApplicationBuilder;
-        $this->facts = $facts;
         $this->dbFilePath = $dbFilePath;
         $this->migrationAvailabilityChecker = $migrationAvailabilityChecker;
+        $this->migrationsPathProvider = $migrationsPathProvider;
     }
 
     /**
@@ -75,7 +79,7 @@ class Migrations
      */
     public function execute($command, $edition = null)
     {
-        $migrationPaths = $this->getMigrationPaths($edition);
+        $migrationPaths = $this->migrationsPathProvider->getMigrationsPath($edition);
 
         foreach ($migrationPaths as $migrationEdition => $migrationPath) {
             $doctrineApplication = $this->doctrineApplicationBuilder->build();
@@ -126,31 +130,5 @@ class Migrations
     {
         return ($command !== self::MIGRATE_COMMAND
             || $this->migrationAvailabilityChecker->migrationExists($migrationPath));
-    }
-
-    /**
-     * Filters out only needed migrations.
-     *
-     * @param string $edition Shop edition.
-     *
-     * @return array
-     */
-    private function getMigrationPaths($edition = null)
-    {
-        $allMigrationPaths = $this->facts->getMigrationPaths();
-
-        if (is_null($edition)) {
-            return $allMigrationPaths;
-        }
-
-        $migrationPaths = [];
-        foreach ($allMigrationPaths as $migrationEdition => $migrationPath) {
-            if (strtolower($migrationEdition) === strtolower($edition)) {
-                $migrationPaths[$migrationEdition] = $migrationPath;
-                break;
-            }
-        }
-
-        return $migrationPaths;
     }
 }

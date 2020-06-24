@@ -16,7 +16,7 @@ class MigrationsBuilder
     /**
      * @return Migrations
      */
-    public function build(Facts $facts = null)
+    public function build(Facts $facts = null): Migrations
     {
         $doctrineApplicationBuilder = new DoctrineApplicationBuilder();
 
@@ -28,6 +28,13 @@ class MigrationsBuilder
 
         $migrationAvailabilityChecker = new MigrationAvailabilityChecker();
 
-        return new Migrations($doctrineApplicationBuilder, $facts, $dbFilePath, $migrationAvailabilityChecker);
+        $migrationsPathProvider = new MigrationsPathProvider($facts);
+
+        return new Migrations(
+            $doctrineApplicationBuilder,
+            $dbFilePath,
+            $migrationAvailabilityChecker,
+            $migrationsPathProvider
+        );
     }
 }

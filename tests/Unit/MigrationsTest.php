@@ -12,6 +12,8 @@ namespace OxidEsales\DoctrineMigrationWrapper\Tests\Unit;
 use OxidEsales\DoctrineMigrationWrapper\DoctrineApplicationBuilder;
 use OxidEsales\DoctrineMigrationWrapper\MigrationAvailabilityChecker;
 use OxidEsales\DoctrineMigrationWrapper\Migrations;
+use OxidEsales\DoctrineMigrationWrapper\MigrationsPathProvider;
+use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\Facts\Facts;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -19,6 +21,7 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Console\Application;
 use Prophecy\Argument;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\DependencyInjection\ContainerBuilder as SymfonyContainerBuilder;
 
 final class MigrationsTest extends TestCase
 {
@@ -34,7 +37,7 @@ final class MigrationsTest extends TestCase
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
-        $facts = $this->getFactsStub(['edition' => 'path_to_migrations']);
+        $migrationsPathProvider = $this->getMigrationsPathProviderStub(['edition' => 'path_to_migrations']);
 
         $pathToDbConfig = '';
 
@@ -42,9 +45,9 @@ final class MigrationsTest extends TestCase
 
         $migrations = new Migrations(
             $doctrineApplicationBuilder,
-            $facts,
             $pathToDbConfig,
-            $migrationAvailabilityChecker
+            $migrationAvailabilityChecker,
+            $migrationsPathProvider
         );
         $this->assertSame(0, $migrations->execute('migrations:migrate'));
     }
@@ -70,15 +73,15 @@ final class MigrationsTest extends TestCase
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
-        $facts = $this->getFactsStub(['ce' => $ceMigrationsPath]);
+        $migrationsPathProvider = $this->getMigrationsPathProviderStub(['ce' => $ceMigrationsPath]);
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
 
         $migrations = new Migrations(
             $doctrineApplicationBuilder,
-            $facts,
             $dbConfigFilePath,
-            $migrationAvailabilityChecker
+            $migrationAvailabilityChecker,
+            $migrationsPathProvider
         );
 
         $migrations->execute($command);
@@ -129,15 +132,15 @@ final class MigrationsTest extends TestCase
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
-        $facts = $this->getFactsStub($migrationPaths);
+        $migrationsPathProvider = $this->getMigrationsPathProviderStub($migrationPaths);
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
 
         $migrations = new Migrations(
             $doctrineApplicationBuilder,
-            $facts,
             $dbConfigFilePath,
-            $migrationAvailabilityChecker
+            $migrationAvailabilityChecker,
+            $migrationsPathProvider
         );
 
         $migrations->execute($command);
@@ -153,8 +156,6 @@ final class MigrationsTest extends TestCase
         $dbConfigFilePath = 'path_to_DB_config_file';
         $eeMigrationsPath = 'path_to_ee_migrations';
         $migrationPaths = [
-            'ce' => 'path_to_ce_migrations',
-            'pe' => 'path_to_pe_migrations',
             'eE' => $eeMigrationsPath,
         ];
 
@@ -170,15 +171,15 @@ final class MigrationsTest extends TestCase
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
-        $facts = $this->getFactsStub($migrationPaths);
+        $migrationsPathProvider = $this->getMigrationsPathProviderStub($migrationPaths);
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
 
         $migrations = new Migrations(
             $doctrineApplicationBuilder,
-            $facts,
             $dbConfigFilePath,
-            $migrationAvailabilityChecker
+            $migrationAvailabilityChecker,
+            $migrationsPathProvider
         );
 
         $migrations->execute($command, 'Ee');
@@ -202,15 +203,15 @@ final class MigrationsTest extends TestCase
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
-        $facts = $this->getFactsStub($migrationPaths);
+        $migrationsPathProvider = $this->getMigrationsPathProviderStub($migrationPaths);
 
-        $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
+        $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(false);
 
         $migrations = new Migrations(
             $doctrineApplicationBuilder,
-            $facts,
             $dbConfigFilePath,
-            $migrationAvailabilityChecker
+            $migrationAvailabilityChecker,
+            $migrationsPathProvider
         );
 
         $migrations->execute($command, 'PR');
@@ -230,15 +231,15 @@ final class MigrationsTest extends TestCase
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
-        $facts = $this->getFactsStub(['ce' => $ceMigrationsPath]);
+        $migrationsPathProvider = $this->getMigrationsPathProviderStub(['ce' => $ceMigrationsPath]);
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(false);
 
         $migrations = new Migrations(
             $doctrineApplicationBuilder,
-            $facts,
             $dbConfigFilePath,
-            $migrationAvailabilityChecker
+            $migrationAvailabilityChecker,
+            $migrationsPathProvider
         );
 
         $migrations->execute($command);
@@ -257,7 +258,7 @@ final class MigrationsTest extends TestCase
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
-        $facts = $this->getFactsStub(['ce' => $ceMigrationsPath]);
+        $migrationsPathProvider = $this->getMigrationsPathProviderStub(['ce' => $ceMigrationsPath]);
 
         $migrationAvailabilityChecker = $this->createPartialMock(
             MigrationAvailabilityChecker::class,
@@ -269,9 +270,9 @@ final class MigrationsTest extends TestCase
 
         $migrations = new Migrations(
             $doctrineApplicationBuilder,
-            $facts,
             $dbConfigFilePath,
-            $migrationAvailabilityChecker
+            $migrationAvailabilityChecker,
+            $migrationsPathProvider
         );
 
         $migrations->execute($command);
@@ -290,15 +291,15 @@ final class MigrationsTest extends TestCase
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
-        $facts = $this->getFactsStub(['ce' => $ceMigrationsPath]);
+        $migrationsPathProvider = $this->getMigrationsPathProviderStub(['ce' => $ceMigrationsPath]);
 
         $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(false);
 
         $migrations = new Migrations(
             $doctrineApplicationBuilder,
-            $facts,
             $dbConfigFilePath,
-            $migrationAvailabilityChecker
+            $migrationAvailabilityChecker,
+            $migrationsPathProvider
         );
 
         $migrations->execute($command);
@@ -315,7 +316,7 @@ final class MigrationsTest extends TestCase
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
-        $facts = $this->getFactsStub(['edition' => 'path_to_migrations']);
+        $migrationsPathProvider = $this->getMigrationsPathProviderStub(['edition' => 'path_to_migrations']);
 
         $pathToDbConfig = '';
 
@@ -323,9 +324,9 @@ final class MigrationsTest extends TestCase
 
         $migrations = new Migrations(
             $doctrineApplicationBuilder,
-            $facts,
             $pathToDbConfig,
-            $migrationAvailabilityChecker
+            $migrationAvailabilityChecker,
+            $migrationsPathProvider
         );
 
         $this->assertSame($errorCode, $migrations->execute('migrations:migrate'));
@@ -336,12 +337,16 @@ final class MigrationsTest extends TestCase
         $application = $this->prophesize(Application::class);
         $applicationBuilder = $this->prophesize(DoctrineApplicationBuilder::class);
         $applicationBuilder->build()->willReturn($application);
-        $facts = $this->prophesize(Facts::class);
-        $facts->getMigrationPaths()->willReturn(['something']);
+        $migrationsPathProvider = $this->prophesize(MigrationsPathProvider::class);
+        $migrationsPathProvider->getMigrationsPath(null)->willReturn(['something']);
         $checker = $this->prophesize(MigrationAvailabilityChecker::class);
 
-        (new Migrations($applicationBuilder->reveal(), $facts->reveal(), '', $checker->reveal()))
-            ->execute('');
+        (new Migrations(
+            $applicationBuilder->reveal(),
+            '',
+            $checker->reveal(),
+            $migrationsPathProvider->reveal()
+        ))->execute('');
 
         $application->run(
             Argument::that(
@@ -401,12 +406,16 @@ final class MigrationsTest extends TestCase
      * @param $migrationPaths
      * @return MockObject|Facts
      */
-    private function getFactsStub($migrationPaths): MockObject
+    private function getMigrationsPathProviderStub($migrationPaths): MockObject
     {
-        $facts = $this->createPartialMock(Facts::class, ['getMigrationPaths']);
-        $facts->method('getMigrationPaths')->willReturn($migrationPaths);
+        $migrationsPathProvider = $this->getMockBuilder(MigrationsPathProvider::class)
+            ->setMethods(['getMigrationsPath'])
+            ->setConstructorArgs([new Facts()])
+            ->getMock();
 
-        return $facts;
+        $migrationsPathProvider->method('getMigrationsPath')->willReturn($migrationPaths);
+
+        return $migrationsPathProvider;
     }
 
     /**

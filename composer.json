@@ -13,7 +13,9 @@
     "phpspec/prophecy-phpunit": "dev-master",
     "mikey179/vfsstream": "^1.6",
     "symfony/filesystem": "^5.0.4",
-    "symfony/yaml": "^v5.0.5"
+    "symfony/yaml": "^v5.0.5",
+    "oxid-esales/oxideshop-ce": "dev-master",
+    "ext-pdo": "*"
   },
   "autoload": {
     "psr-4": {
