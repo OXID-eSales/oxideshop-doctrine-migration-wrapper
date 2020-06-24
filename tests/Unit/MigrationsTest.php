@@ -13,7 +13,6 @@ use OxidEsales\DoctrineMigrationWrapper\DoctrineApplicationBuilder;
 use OxidEsales\DoctrineMigrationWrapper\MigrationAvailabilityChecker;
 use OxidEsales\DoctrineMigrationWrapper\Migrations;
 use OxidEsales\DoctrineMigrationWrapper\MigrationsPathProvider;
-use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\Facts\Facts;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -21,7 +20,6 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Console\Application;
 use Prophecy\Argument;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\DependencyInjection\ContainerBuilder as SymfonyContainerBuilder;
 
 final class MigrationsTest extends TestCase
 {
