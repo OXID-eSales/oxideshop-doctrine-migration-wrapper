@@ -59,28 +59,7 @@ class MigrationsPathProvider implements MigrationsPathProviderInterface
      */
     private function getShopEditionsPath(): array
     {
-        $migrationPaths = [
-            'ce' => Path::join($this->facts->getSourcePath(), 'migration', 'migrations.yml')
-        ];
-
-        if ($this->facts->isProfessional() || $this->facts->isEnterprise()) {
-            $migrationPaths['pe'] = Path::join(
-                $this->facts->getProfessionalEditionRootPath(),
-                'migration', 'migrations.yml'
-            );
-        }
-
-        if ($this->facts->isEnterprise()) {
-            $migrationPaths['ee'] = Path::join(
-                $this->facts->getEnterpriseEditionRootPath(),
-                'migration', 'migrations.yml'
-            );
-        }
-
-        $migrationPaths['pr'] = Path::join($this->facts->getSourcePath()
-            , 'migration', 'project_migrations.yml');
-
-        return $migrationPaths;
+        return $this->facts->getMigrationPaths();
     }
 
     /**
@@ -104,7 +83,8 @@ class MigrationsPathProvider implements MigrationsPathProviderInterface
 
         foreach ($shopConfigurationDao->getModuleConfigurations() as $moduleConfiguration) {
             $migrationConfigurationPath = Path::join(
-                $basicContext->getModuleSourcePath(),
+                $basicContext->getShopRootPath(),
+                $moduleConfiguration->getModuleSource(),
                 '/migration/migrations.yml'
             );
             if (file_exists($migrationConfigurationPath)) {
