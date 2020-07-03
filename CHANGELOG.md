@@ -10,13 +10,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/ ).
 ### Changed
 - Update symfony components to version 5
 
-## [3.1.0] - Unrleased
+## [3.1.0] - 2020-07-03
 
 ### Added
 
 - Add module migrations
 
-## [3.0.0] - 24-04-20
+## [3.0.0] - 2020-04-24
 
 ### Changed
 - Minimum PHP version to v7.1
