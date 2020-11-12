@@ -5,6 +5,7 @@
   "require": {
     "php": "^7.3",
     "doctrine/migrations": "^2.2.1",
+    "composer/package-versions-deprecated": "^1",
     "oxid-esales/oxideshop-facts": "dev-master",
     "symfony/console": "^5.0.4"
   },
