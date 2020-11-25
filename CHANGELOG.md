@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/ ).
 
 ## [2.1.4] - unreleased
 
-### Changed
-
 ### Fixed
+- Ensure Composer V2 compatibility for PHP < 7.4 via composer/package-versions-deprecated
 
 ## [2.1.3] - 2019-01-18
 

@@ -6,6 +6,7 @@
     "php": ">=5.6",
     "doctrine/migrations": "^1.4.1",
     "oxid-esales/oxideshop-facts": "^2.0.0",
+    "composer/package-versions-deprecated": "^1",
     "symfony/console": "*"
   },
   "require-dev": {
