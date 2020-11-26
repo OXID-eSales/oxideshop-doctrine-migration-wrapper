@@ -35,5 +35,34 @@ $migrations = $migrationsBuilder->build();
 
 $command = $argv[1] ?? null;
 $edition = $argv[2] ?? null;
+$flags = [];
 
-exit($migrations->execute($command, $edition));
+if (isset($argv[3])) {
+
+    // Do not alter $argv itself
+    $copyOfArgv = $argv;
+
+    unset(
+        $copyOfArgv[0],
+        $copyOfArgv[1],
+        $copyOfArgv[2]
+    );
+
+    foreach ($copyOfArgv as $flag) {
+
+        /*
+         * Determines if a param has also a value
+         * if case  : --write-sql=/var/www/html/source/migration/project_data/
+         * else case: --dry-run
+         */
+        $keyValuePair = preg_split('/=/', $flag);
+
+        if (count($keyValuePair) === 2) {
+            $flags[$keyValuePair[0]] = $keyValuePair[1];
+        } else {
+            $flags[$flag] = null;
+        }
+    }
+}
+
+exit($migrations->execute($command, $edition, $flags));

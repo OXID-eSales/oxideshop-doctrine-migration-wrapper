@@ -74,17 +74,19 @@ class Migrations
      *
      * @param string $command Doctrine Migration command to run.
      * @param string $edition Possibility to run migration only against one edition.
+     * @param array $flags Doctrine Migration flags.
      *
      * @return int error code if one exist or 0 for success
+     * @throws \Exception
      */
-    public function execute($command, $edition = null)
+    public function execute($command, $edition = null, $flags = [])
     {
         $migrationPaths = $this->migrationsPathProvider->getMigrationsPath($edition);
 
         foreach ($migrationPaths as $migrationEdition => $migrationPath) {
             $doctrineApplication = $this->doctrineApplicationBuilder->build();
 
-            $input = $this->formDoctrineInput($command, $migrationPath, $this->dbFilePath);
+            $input = $this->formDoctrineInput($command, $migrationPath, $this->dbFilePath, $flags);
 
             if ($this->shouldRunCommand($command, $migrationPath)) {
                 $errorCode = $doctrineApplication->run($input, $this->output);
@@ -103,17 +105,22 @@ class Migrations
      * @param string $command command to run.
      * @param string $migrationPath path to migration configuration file.
      * @param string $dbFilePath path to database configuration file.
+     * @param array $flags Doctrine Migration flags.
      *
      * @return ArrayInput
      */
-    private function formDoctrineInput($command, $migrationPath, $dbFilePath): ArrayInput
+    private function formDoctrineInput($command, $migrationPath, $dbFilePath, array $flags): ArrayInput
     {
-        return new ArrayInput([
+        $formedInput = [
             '--configuration' => $migrationPath,
             '--db-configuration' => $dbFilePath,
             '-n' => true,
             'command' => !empty($command) ? $command : self::STATUS_COMMAND,
-        ]);
+        ];
+
+        $formedInput = array_merge($formedInput, $flags);
+
+        return new ArrayInput($formedInput);
     }
 
     /**
