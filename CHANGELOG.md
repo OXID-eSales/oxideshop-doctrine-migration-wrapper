@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/ ).
 ### Changed
 - Update symfony components to version 5
 
+## [3.2.0] - 2021-04-12
+
+### Added
+- Support PHP 8.0
+
+### Removed
+- Support PHP 7.1 and 7.2
+
 ## [3.1.1] - 2020-11-12
 
 ### Fixed
@@ -53,6 +61,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/ ).
 
 - No more illegal mix of collation errors if collation_server was configured to something else than utf8_general_ci. [Bug 6782](https://bugs.oxid-esales.com/view.php?id=6782)
 
+[3.2.0]: https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper/compare/v3.1.1...3.2.0
 [3.1.1]: https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper/compare/v3.1.0...3.1.1
 [3.1.0]: https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper/compare/v3.0.0...3.1.0
 [3.0.0]: https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper/compare/v2.1.3...3.0.0
