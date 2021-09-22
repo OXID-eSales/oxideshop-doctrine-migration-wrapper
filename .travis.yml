@@ -8,14 +8,14 @@ php:
   - "7.4"
   - "8.0"
 
-install:
-  - composer install
-
-script:
-  - vendor/bin/phpunit tests
-
 services:
   - mysql
 
+install:
+  - composer install  --no-plugins
+
 before_script:
   - cp tests/testData/source/config.inc.php.dist tests/testData/source/config.inc.php
+
+script:
+  - vendor/bin/phpunit tests
