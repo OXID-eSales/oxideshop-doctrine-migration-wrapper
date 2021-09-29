@@ -41,7 +41,7 @@ final class EnvironmentPreparator
     private function openDatabaseConnection(): void
     {
         $this->databaseConnection = new PDO(
-            'mysql:host=' . $this->configFile->dbHost,
+            "mysql:host={$this->configFile->dbHost}",
             $this->configFile->dbUser,
             $this->configFile->dbPwd
         );
