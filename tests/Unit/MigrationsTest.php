@@ -356,6 +356,99 @@ final class MigrationsTest extends TestCase
         )->shouldBeCalledOnce();
     }
 
+    public function testExecuteMigrationWithFlags(): void
+    {
+        $command = 'migrations:migrate';
+        $flags = ['--a-new-flag', '--another-new-flag'];
+        $dbConfigFilePath = 'path_to_DB_config_file';
+        $eeMigrationsPath = 'path_to_ee_migrations';
+        $migrationPaths = [
+            'eE' => $eeMigrationsPath,
+        ];
+
+        $inputEE = [
+            '--configuration' => $eeMigrationsPath,
+            '--db-configuration' => $dbConfigFilePath,
+            '-n' => true,
+            'command' => $command,
+        ];
+        $inputEE = array_merge($inputEE, $flags);
+
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
+        $doctrineApplication->expects($this->once())->method('run')->with($inputEE);
+
+        $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
+
+        $migrationsPathProvider = $this->getMigrationsPathProviderStub($migrationPaths);
+
+        $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
+
+        $migrations = new Migrations(
+            $doctrineApplicationBuilder,
+            $dbConfigFilePath,
+            $migrationAvailabilityChecker,
+            $migrationsPathProvider
+        );
+
+        $migrations->execute($command, 'Ee', $flags);
+    }
+
+    public function testRaiseErrorExecuteMigrationWithInvalidDbConfigurationFlag(): void
+    {
+        $command = 'migrations:migrate';
+        $dbConfigFilePath = 'path_to_DB_config_file';
+        $eeMigrationsPath = 'path_to_ee_migrations';
+        $migrationPaths = [
+            'eE' => $eeMigrationsPath,
+        ];
+
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
+
+        $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
+
+        $migrationsPathProvider = $this->getMigrationsPathProviderStub($migrationPaths);
+
+        $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
+
+        $migrations = new Migrations(
+            $doctrineApplicationBuilder,
+            $dbConfigFilePath,
+            $migrationAvailabilityChecker,
+            $migrationsPathProvider
+        );
+
+        $this->expectException(\InvalidArgumentException::class);
+        $migrations->execute($command, 'Ee', ['--db-configuration']);
+    }
+
+    public function testRaiseErrorExecuteMigrationWithInvalidNFlag(): void
+    {
+        $command = 'migrations:migrate';
+        $dbConfigFilePath = 'path_to_DB_config_file';
+        $eeMigrationsPath = 'path_to_ee_migrations';
+        $migrationPaths = [
+            'eE' => $eeMigrationsPath,
+        ];
+
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
+
+        $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
+
+        $migrationsPathProvider = $this->getMigrationsPathProviderStub($migrationPaths);
+
+        $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
+
+        $migrations = new Migrations(
+            $doctrineApplicationBuilder,
+            $dbConfigFilePath,
+            $migrationAvailabilityChecker,
+            $migrationsPathProvider
+        );
+
+        $this->expectException(\InvalidArgumentException::class);
+        $migrations->execute($command, 'Ee', ['-n']);
+    }
+
     /**
      * @param $runsAtLeastOnce
      * @param null $callWith
