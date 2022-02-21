@@ -161,6 +161,9 @@ Now, while being in the wrapper directory, its possible to run the tests for wra
 .. note::
     Tests doesn't destroy your current shop installation if configured correctly (to use different database)!
 
+.. note::
+    If you want to use the CLI in the eShop, you have to rename the vendor folder. Otherwise the CLI doesn't work.
+
 
 Bugs and Issues
 ---------------
