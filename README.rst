@@ -125,18 +125,15 @@ Setup ce-shop for wrapper
     cd ..
 
 Require all CE-shop versions and necessary vendors for the wrapper (``--no-plugins`` is important)
+Adjust cloned shop component requirements to fit our wrapper version and install wrapper development dependencies with
+``--no-plugins``
 
 .. code:: bash
 
     composer require --dev --no-plugins oxid-esales/oxideshop-ce:*
-
-After copying the configuration file for tests with
-
-.. code:: bash
-
     cp tests/testData/source/config.inc.php.dist tests/testData/source/config.inc.php
 
-you only have to configure your MySQL credentials in ``config.inc.php``.
+Adjust MySQL credentials in ``config.inc.php`` to use an **empty or non existing** Database.
 The ``config.inc.php`` could look like this:
 
 .. code:: php
@@ -156,11 +153,14 @@ The ``config.inc.php`` could look like this:
     $this->dbUser = 'root'; // database user name
     $this->dbPwd = 'root'; // database user password
 
-After filling the config with the credentials you can execute your tests
+Now, while being in the wrapper directory, its possible to run the tests for wrapper
 
 .. code:: bash
 
-    ./vendor/phpunit/phpunit/phpunit tests/
+    ./vendor/bin/phpunit tests/
+
+.. note::
+    Tests doesn't destroy your current shop installation if configured correctly (to use different database)!
 
 
 Bugs and Issues
