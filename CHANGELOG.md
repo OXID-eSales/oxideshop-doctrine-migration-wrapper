@@ -69,6 +69,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/ ).
 
 - No more illegal mix of collation errors if collation_server was configured to something else than utf8_general_ci. [Bug 6782](https://bugs.oxid-esales.com/view.php?id=6782)
 
+[4.0.0]: https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper/compare/v3.3.0...v4.0.0
 [3.3.0]: https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper/compare/v3.2.0...v3.3.0
 [3.2.0]: https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper/compare/v3.1.1...v3.2.0
 [3.1.1]: https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper/compare/v3.1.0...v3.1.1
