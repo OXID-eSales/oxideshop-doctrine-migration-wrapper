@@ -124,7 +124,6 @@ Setup ce-shop for wrapper
     composer require --no-update oxid-esales/oxideshop-doctrine-migration-wrapper:*
     cd ..
 
-Require all CE-shop versions and necessary vendors for the wrapper (``--no-plugins`` is important)
 Adjust cloned shop component requirements to fit our wrapper version and install wrapper development dependencies with
 ``--no-plugins``
 
@@ -133,7 +132,7 @@ Adjust cloned shop component requirements to fit our wrapper version and install
     composer require --dev --no-plugins oxid-esales/oxideshop-ce:*
     cp tests/testData/source/config.inc.php.dist tests/testData/source/config.inc.php
 
-Adjust MySQL credentials in ``config.inc.php`` to use an **empty or non existing** Database.
+Adjust MySQL credentials in the tests specific ``config.inc.php`` to use an **empty or non existing** Database.
 The ``config.inc.php`` could look like this:
 
 .. code:: php
