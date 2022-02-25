@@ -97,6 +97,71 @@ Doctrine Migration Wrapper is written in PHP and also could be used without comm
 - Call ``execute`` method with needed parameters
 
 
+Installation
+------------
+
+Development installation
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. note::
+    The following commands have to be executed in the php-container of your already installed eshop.
+
+Register and update the migration wrapper repository with your branch in the composer.json of the eshop
+
+.. code:: bash
+
+    composer config repositories.oxid-esales/oxideshop-doctrine-migration-wrapper git https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper
+    composer require oxid-esales/oxideshop-doctrine-migration-wrapper:dev-b-6.4.x
+
+Setup ce-shop for wrapper
+
+.. code:: bash
+
+    cd vendor/oxid-esales/oxideshop-doctrine-migration-wrapper/
+    git clone --branch=b-6.4.x https://github.com/OXID-eSales/oxideshop_ce.git source_ce
+    composer config repositories.oxid-esales/oxideshop-ce path source_ce/
+    cd source_ce
+    composer require --no-update oxid-esales/oxideshop-doctrine-migration-wrapper:*
+    cd ..
+
+Adjust cloned shop component requirements to fit our wrapper version and install wrapper development dependencies with
+``--no-plugins``
+
+.. code:: bash
+
+    composer require --dev --no-plugins oxid-esales/oxideshop-ce:*
+    cp tests/testData/source/config.inc.php.dist tests/testData/source/config.inc.php
+
+Adjust MySQL credentials in the tests specific ``config.inc.php`` to use an **empty or non existing** Database.
+The ``config.inc.php`` could look like this:
+
+.. code:: php
+
+    <?php
+
+    /**
+     * Copyright © OXID eSales AG. All rights reserved.
+     * See LICENSE file for license details.
+     */
+
+    // Database connection information
+    $this->dbType = 'pdo_mysql';
+    $this->dbHost = 'mysql'; // database host name
+    $this->dbPort = '3306'; // database port
+    $this->dbName = 'example2'; // database name
+    $this->dbUser = 'root'; // database user name
+    $this->dbPwd = 'root'; // database user password
+
+Now, while being in the wrapper directory, its possible to run the tests for wrapper
+
+.. code:: bash
+
+    ./vendor/bin/phpunit tests/
+
+.. note::
+    Tests doesn't destroy your current shop installation if configured correctly (to use different database)!
+
+
 Bugs and Issues
 ---------------
 
