@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\DoctrineMigrationWrapper;
 
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\Output;
 
 /**
@@ -40,6 +41,15 @@ class Migrations
      * @var MigrationsPathProvider
      */
     private $migrationsPathProvider;
+
+    /**
+     * @var string[]
+     */
+    private $predefinedCommandKeys = [
+        'configuration' => '--configuration',
+        'dbConfiguration' => '--db-configuration',
+        'noInteraction' => '-n'
+    ];
 
     /**
      *
@@ -116,19 +126,24 @@ class Migrations
      * Execute Doctrine Migration command for all needed Shop edition and project.
      * If Doctrine returns an error code breaks and return it.
      *
-     * @param string $command Doctrine Migration command to run.
-     * @param string $edition Possibility to run migration only against one edition.
+     * @param string|null $command Doctrine Migration command to run.
+     * @param string|null $edition Possibility to run migration only against one edition.
+     * @param array $flags Doctrine Migration flags.
      *
-     * @return int error code if one exist or 0 for success
+     * @return int|string error code or error if one exist or 0 for success
      */
-    public function execute($command, $edition = null)
+    public function execute(?string $command, ?string $edition = null, array $flags = [])
     {
         $migrationPaths = $this->migrationsPathProvider->getMigrationsPath($edition);
+        $flagsValidationError = $this->validateFlags($flags);
+        if ($flagsValidationError) {
+            return $flagsValidationError;
+        }
 
         foreach ($migrationPaths as $migrationEdition => $migrationPath) {
             $doctrineApplication = $this->doctrineApplicationBuilder->build();
 
-            $input = $this->formDoctrineInput($command, $migrationPath, $this->dbFilePath);
+            $input = $this->formDoctrineInput($command, $migrationPath, $this->dbFilePath, $flags);
 
             if ($this->shouldRunCommand($command, $migrationPath)) {
                 $errorCode = $doctrineApplication->run($input, $this->output);
@@ -144,20 +159,38 @@ class Migrations
     /**
      * Form input which is expected by Doctrine.
      *
-     * @param string $command command to run.
+     * @param string|null $command command to run.
      * @param string $migrationPath path to migration configuration file.
      * @param string $dbFilePath path to database configuration file.
+     * @param array $flags flags for command
      *
      * @return ArrayInput
      */
-    private function formDoctrineInput($command, $migrationPath, $dbFilePath): ArrayInput
+    private function formDoctrineInput(?string $command, string $migrationPath, string $dbFilePath, array $flags): ArrayInput
     {
-        return new ArrayInput([
-            '--configuration' => $migrationPath,
-            '--db-configuration' => $dbFilePath,
-            '-n' => true,
+        $formedInput = [
+            $this->predefinedCommandKeys['configuration'] => $migrationPath,
+            $this->predefinedCommandKeys['dbConfiguration'] => $dbFilePath,
+            $this->predefinedCommandKeys['noInteraction'] => true,
             'command' => !empty($command) ? $command : self::STATUS_COMMAND,
-        ]);
+        ];
+
+        $formedInput = array_merge($formedInput, $flags);
+
+        return new ArrayInput($formedInput);
+    }
+
+    private function validateFlags(array $flags): ?string
+    {
+        $notAllowedFlags = array_filter($this->predefinedCommandKeys, function ($var) use(&$flags) {
+            return array_key_exists($var, $flags);
+        });
+
+        if (!empty($notAllowedFlags)) {
+            return 'The following flags are not allowed: "'.implode('","', $notAllowedFlags)."\"\n";
+        }
+
+        return null;
     }
 
     /**

@@ -179,9 +179,11 @@ final class MigrationsTest extends TestCase
         ]);
 
         $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
-        $doctrineApplication->expects($this->at(0))->method('run')->with($inputCE);
-        $doctrineApplication->expects($this->at(1))->method('run')->with($inputPE);
-        $doctrineApplication->expects($this->at(2))->method('run')->with($inputEE);
+        $doctrineApplication->expects($this->exactly(3))->method('run')->withConsecutive(
+            [$inputCE, null],
+            [$inputPE, null],
+            [$inputEE, null]
+        );
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
@@ -427,7 +429,7 @@ final class MigrationsTest extends TestCase
             '-n' => true,
             'command' => $command,
         ];
-        $inputEE = array_merge($inputEE, $flags);
+        $inputEE = new ArrayInput(array_merge($inputEE, $flags));
 
         $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
         $doctrineApplication->expects($this->once())->method('run')->with($inputEE);
@@ -458,6 +460,7 @@ final class MigrationsTest extends TestCase
         ];
 
         $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
+        $doctrineApplication->expects($this->never())->method('run');
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
@@ -472,8 +475,7 @@ final class MigrationsTest extends TestCase
             $migrationsPathProvider
         );
 
-        $this->expectException(\InvalidArgumentException::class);
-        $migrations->execute($command, 'Ee', ['--db-configuration']);
+        $this->assertSame("The following flags are not allowed: \"--db-configuration\"\n", $migrations->execute($command, 'Ee', ['--db-configuration' => 'path_to_DB_config_file']));
     }
 
     public function testRaiseErrorExecuteMigrationWithInvalidNFlag(): void
@@ -486,6 +488,7 @@ final class MigrationsTest extends TestCase
         ];
 
         $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
+        $doctrineApplication->expects($this->never())->method('run');
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
@@ -500,8 +503,7 @@ final class MigrationsTest extends TestCase
             $migrationsPathProvider
         );
 
-        $this->expectException(\InvalidArgumentException::class);
-        $migrations->execute($command, 'Ee', ['-n']);
+        $this->assertSame("The following flags are not allowed: \"-n\"\n", $migrations->execute($command, 'Ee', ['-n' => null]));
     }
 
     /**
