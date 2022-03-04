@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\DoctrineMigrationWrapper\Tests\Unit;
 
 use OxidEsales\DoctrineMigrationWrapper\DoctrineApplicationBuilder;
+use OxidEsales\DoctrineMigrationWrapper\MigrationArgumentParser;
 use OxidEsales\DoctrineMigrationWrapper\MigrationAvailabilityChecker;
 use OxidEsales\DoctrineMigrationWrapper\Migrations;
 use OxidEsales\DoctrineMigrationWrapper\MigrationsPathProvider;
@@ -124,9 +125,11 @@ final class MigrationsTest extends TestCase
         ]);
 
         $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
-        $doctrineApplication->expects($this->at(0))->method('run')->with($inputCE);
-        $doctrineApplication->expects($this->at(1))->method('run')->with($inputPE);
-        $doctrineApplication->expects($this->at(2))->method('run')->with($inputEE);
+        $doctrineApplication->expects($this->exactly(3))->method('run')->withConsecutive(
+            [$inputCE, null],
+            [$inputPE, null],
+            [$inputEE, null]
+        );
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
@@ -354,6 +357,91 @@ final class MigrationsTest extends TestCase
             ),
             Argument::any()
         )->shouldBeCalledOnce();
+    }
+
+    public function testExecuteMigrationWithFlags(): void
+    {
+        $command = 'migrations:migrate';
+        $flags = ['--a-new-flag', '--another-new-flag'];
+        $dbConfigFilePath = 'path_to_DB_config_file';
+        $eeMigrationsPath = 'path_to_ee_migrations';
+        $migrationPaths = [
+            'eE' => $eeMigrationsPath,
+        ];
+
+        $inputEE = [
+            '--configuration' => $eeMigrationsPath,
+            '--db-configuration' => $dbConfigFilePath,
+            '-n' => true,
+            'command' => $command,
+        ];
+        $inputEE = new ArrayInput(array_merge($inputEE, $flags));
+
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
+        $doctrineApplication->expects($this->once())->method('run')->with($inputEE);
+
+        $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
+
+        $migrationsPathProvider = $this->getMigrationsPathProviderStub($migrationPaths);
+
+        $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
+
+        $migrations = new Migrations(
+            $doctrineApplicationBuilder,
+            $dbConfigFilePath,
+            $migrationAvailabilityChecker,
+            $migrationsPathProvider
+        );
+
+        $migrations->execute($command, 'Ee', $flags);
+    }
+
+    /**
+     * @dataProvider badFlagsDataProvider
+     */
+    public function testRaiseErrorExecuteMigrationWithInvalidNFlag($message, $flags): void
+    {
+        $command = 'migrations:migrate';
+        $dbConfigFilePath = 'path_to_DB_config_file';
+        $eeMigrationsPath = 'path_to_ee_migrations';
+        $migrationPaths = [
+            'eE' => $eeMigrationsPath,
+        ];
+
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
+        $doctrineApplication->expects($this->never())->method('run');
+
+        $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
+
+        $migrationsPathProvider = $this->getMigrationsPathProviderStub($migrationPaths);
+
+        $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
+
+        $migrations = new Migrations(
+            $doctrineApplicationBuilder,
+            $dbConfigFilePath,
+            $migrationAvailabilityChecker,
+            $migrationsPathProvider
+        );
+
+        $this->expectException(\Symfony\Component\Console\Exception\InvalidOptionException::class);
+        $this->expectExceptionMessage($message);
+
+        $migrations->execute($command, 'Ee', $flags);
+    }
+
+    public function badFlagsDataProvider(): array
+    {
+        return [
+            [
+                'message' => 'The following flags are not allowed to be overwritten: --db-configuration',
+                'flags' => ['--db-configuration' => 'path_to_DB_config_file']
+            ],
+            [
+                'message' => 'The following flags are not allowed to be overwritten: -n',
+                'flags' => ['-n' => null]
+            ]
+        ];
     }
 
     /**
