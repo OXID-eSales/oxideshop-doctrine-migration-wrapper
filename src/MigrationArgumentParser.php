@@ -8,20 +8,25 @@ class MigrationArgumentParser
     private ?string $edition;
     private array $flags;
 
-    public function parse(array $argv)
+    public function __construct(array $commandLineArguments)
     {
-        $command = $argv[1] ?? null;
-        $edition = $argv[2] ?? null;
+        $this->parse($commandLineArguments);
+    }
 
+    protected function parse(array $argv)
+    {
+        $this->command = $argv[1] ?? null;
+
+        $edition = $argv[2] ?? null;
         // Just in case the second argument is a flag and edition is not set
         if (isset($edition) && substr($edition, 0, 1) === '-') {
             array_splice($argv, 3, 0, $edition);
             $argv[2] = null;
             $edition = null;
         }
+        $this->edition = $edition;
 
         $flags = [];
-
         if (isset($argv[3])) {
             // Do not alter $argv itself
             $copyOfArgv = $argv;
@@ -47,9 +52,6 @@ class MigrationArgumentParser
                 }
             }
         }
-
-        $this->command = $command;
-        $this->edition = $edition;
         $this->flags = $flags;
     }
 
