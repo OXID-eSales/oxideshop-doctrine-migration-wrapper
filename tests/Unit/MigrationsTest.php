@@ -396,7 +396,10 @@ final class MigrationsTest extends TestCase
         $migrations->execute($command, 'Ee', $flags);
     }
 
-    public function testRaiseErrorExecuteMigrationWithInvalidDbConfigurationFlag(): void
+    /**
+     * @dataProvider badFlagsDataProvider
+     */
+    public function testRaiseErrorExecuteMigrationWithInvalidNFlag($message, $flags): void
     {
         $command = 'migrations:migrate';
         $dbConfigFilePath = 'path_to_DB_config_file';
@@ -421,35 +424,24 @@ final class MigrationsTest extends TestCase
             $migrationsPathProvider
         );
 
-        $this->assertSame("The following flags are not allowed: \"--db-configuration\"\n", $migrations->execute($command, 'Ee', ['--db-configuration' => 'path_to_DB_config_file']));
+        $this->expectException(\Symfony\Component\Console\Exception\InvalidOptionException::class);
+        $this->expectExceptionMessage($message);
+
+        $migrations->execute($command, 'Ee', $flags);
     }
 
-    public function testRaiseErrorExecuteMigrationWithInvalidNFlag(): void
+    public function badFlagsDataProvider(): array
     {
-        $command = 'migrations:migrate';
-        $dbConfigFilePath = 'path_to_DB_config_file';
-        $eeMigrationsPath = 'path_to_ee_migrations';
-        $migrationPaths = [
-            'eE' => $eeMigrationsPath,
+        return [
+            [
+                'message' => 'The following flags are not allowed to be overwritten: --db-configuration',
+                'flags' => ['--db-configuration' => 'path_to_DB_config_file']
+            ],
+            [
+                'message' => 'The following flags are not allowed to be overwritten: -n',
+                'flags' => ['-n' => null]
+            ]
         ];
-
-        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
-        $doctrineApplication->expects($this->never())->method('run');
-
-        $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
-
-        $migrationsPathProvider = $this->getMigrationsPathProviderStub($migrationPaths);
-
-        $migrationAvailabilityChecker = $this->getMigrationAvailabilityStub(true);
-
-        $migrations = new Migrations(
-            $doctrineApplicationBuilder,
-            $dbConfigFilePath,
-            $migrationAvailabilityChecker,
-            $migrationsPathProvider
-        );
-
-        $this->assertSame("The following flags are not allowed: \"-n\"\n", $migrations->execute($command, 'Ee', ['-n' => null]));
     }
 
     /**

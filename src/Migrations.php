@@ -91,10 +91,7 @@ class Migrations
     public function execute(?string $command, ?string $edition = null, array $flags = [])
     {
         $migrationPaths = $this->migrationsPathProvider->getMigrationsPath($edition);
-        $flagsValidationError = $this->validateFlags($flags);
-        if ($flagsValidationError) {
-            return $flagsValidationError;
-        }
+        $this->validateFlags($flags);
 
         foreach ($migrationPaths as $migrationEdition => $migrationPath) {
             $doctrineApplication = $this->doctrineApplicationBuilder->build();
@@ -136,17 +133,17 @@ class Migrations
         return new ArrayInput($formedInput);
     }
 
-    private function validateFlags(array $flags): ?string
+    private function validateFlags(array $flags): void
     {
-        $notAllowedFlags = array_filter($this->predefinedCommandKeys, function ($var) use(&$flags) {
+        $notAllowedFlags = array_filter($this->predefinedCommandKeys, function ($var) use ($flags) {
             return array_key_exists($var, $flags);
         });
 
         if (!empty($notAllowedFlags)) {
-            return 'The following flags are not allowed: "'.implode('","', $notAllowedFlags)."\"\n";
+            throw new \Symfony\Component\Console\Exception\InvalidOptionException(
+                'The following flags are not allowed to be overwritten: ' . implode(', ', $notAllowedFlags)
+            );
         }
-
-        return null;
     }
 
     /**
