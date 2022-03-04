@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\DoctrineMigrationWrapper\Tests\Unit;
 
 use OxidEsales\DoctrineMigrationWrapper\DoctrineApplicationBuilder;
+use OxidEsales\DoctrineMigrationWrapper\MigrationArgumentParser;
 use OxidEsales\DoctrineMigrationWrapper\MigrationAvailabilityChecker;
 use OxidEsales\DoctrineMigrationWrapper\Migrations;
 use OxidEsales\DoctrineMigrationWrapper\MigrationsPathProvider;
@@ -101,8 +102,11 @@ final class MigrationsTest extends TestCase
      */
     public function testArgumentPreparation(array $arguments, array $expected): void
     {
-        $result = Migrations::prepareArgumentsForMigration($arguments);
-        $this->assertSame($expected, $result);
+        $argumentParser = new MigrationArgumentParser();
+        $argumentParser->parse($arguments);
+
+        $this->assertSame($expected,
+            ['command' => $argumentParser->getCommand(), 'edition' => $argumentParser->getEdition(), 'flags' => $argumentParser->getFlags()]);
     }
     
     /**

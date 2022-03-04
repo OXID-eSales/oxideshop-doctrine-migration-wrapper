@@ -78,50 +78,6 @@ class Migrations
         $this->output = $output;
     }
 
-    public static function prepareArgumentsForMigration(array $argv): array
-    {
-        $command = $argv[1] ?? null;
-        $edition = $argv[2] ?? null;
-
-        // Just in case the second argument is a flag and edition is not set
-        if (isset($edition) && substr($edition, 0, 1) === '-') {
-            array_splice($argv, 3, 0, $edition);
-            $argv[2] = null;
-            $edition = null;
-        }
-
-        $flags = [];
-
-        if (isset($argv[3])) {
-
-            // Do not alter $argv itself
-            $copyOfArgv = $argv;
-
-            unset(
-                $copyOfArgv[0],
-                $copyOfArgv[1],
-                $copyOfArgv[2]
-            );
-
-            foreach ($copyOfArgv as $flag) {
-                /*
-                 * Determines if a param has also a value
-                 * if case  : --write-sql=/var/www/html/source/migration/project_data/
-                 * else case: --dry-run
-                 */
-                $keyValuePair = preg_split('/=/', $flag);
-
-                if (count($keyValuePair) === 2) {
-                    $flags[$keyValuePair[0]] = $keyValuePair[1];
-                } else {
-                    $flags[$flag] = null;
-                }
-            }
-        }
-
-        return ['command' => $command, 'edition' => $edition, 'flags' => $flags];
-    }
-
     /**
      * Execute Doctrine Migration command for all needed Shop edition and project.
      * If Doctrine returns an error code breaks and return it.

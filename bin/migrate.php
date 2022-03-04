@@ -33,6 +33,7 @@ if (!$autoloadFileExist) {
 $migrationsBuilder = new \OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder();
 $migrations = $migrationsBuilder->build();
 
-$args = $migrations->prepareArgumentsForMigration($argv);
+$argumentParser = new MigrationArgumentParser();
+$argumentParser->parse($argv);
 
-exit($migrations->execute($args['command'], $args['edition'], $args['flags']));
+exit($migrations->execute($argumentParser->getCommand(), $argumentParser->getEdition(), $argumentParser->getFlags()));
