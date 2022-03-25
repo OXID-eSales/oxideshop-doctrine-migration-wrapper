@@ -7,16 +7,16 @@
     "composer/package-versions-deprecated": "^1",
     "doctrine/migrations": "^2.3.2",
     "oxid-esales/oxideshop-facts": "*",
-    "symfony/console": "^5.0.4"
+    "symfony/console": "*"
   },
   "require-dev": {
     "ext-pdo": "*",
     "mikey179/vfsstream": "^1.6",
-    "oxid-esales/oxideshop-ce": "dev-master",
+    "oxid-esales/oxideshop-ce": "dev-b-7.0.x",
     "phpspec/prophecy-phpunit": "^v2.0.1",
     "phpunit/phpunit": "^9",
-    "symfony/filesystem": "^5.0.4",
-    "symfony/yaml": "^v5.0.5"
+    "symfony/filesystem": "*",
+    "symfony/yaml": "*"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
