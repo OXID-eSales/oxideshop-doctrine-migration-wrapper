@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/ ).
 and this project adheres to [Semantic Versioning](http://semver.org/ ).
 
+## [3.4.0] - Unreleased
+
+### Fixed
+- Remove useless dependency on composer/package-versions-deprecated [PR-7](https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper/pull/7)
+
 ## [3.3.0] - 2021-11-26
 
 ### Removed
