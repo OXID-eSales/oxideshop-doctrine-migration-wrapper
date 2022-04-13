@@ -3,8 +3,7 @@
   "description": "OXID eShop database migrations using doctrine",
   "license": "GPL-3.0-only",
   "require": {
-    "php": "^7.4 || ^8.0",
-    "composer/package-versions-deprecated": "^1",
+    "php": ">=8.0",
     "doctrine/migrations": "^2.3.2",
     "oxid-esales/oxideshop-facts": "*",
     "symfony/console": "*"
