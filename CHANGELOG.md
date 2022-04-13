@@ -20,6 +20,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/ ).
 ### Changed
 - Update symfony components to version 5
 
+## [3.4.0] - Unreleased
+
+### Fixed
+- Remove useless dependency on composer/package-versions-deprecated [PR-7](https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper/pull/7)
+
 ## [3.3.0] - 2021-11-26
 
 ### Removed
