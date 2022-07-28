@@ -9,18 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\DoctrineMigrationWrapper\Tests\Unit;
 
-use OxidEsales\DoctrineMigrationWrapper\DoctrineApplicationBuilder;
 use OxidEsales\DoctrineMigrationWrapper\MigrationArgumentParser;
-use OxidEsales\DoctrineMigrationWrapper\MigrationAvailabilityChecker;
-use OxidEsales\DoctrineMigrationWrapper\Migrations;
-use OxidEsales\DoctrineMigrationWrapper\MigrationsPathProvider;
-use OxidEsales\Facts\Facts;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Symfony\Component\Console\Application;
-use Prophecy\Argument;
-use Symfony\Component\Console\Input\ArrayInput;
 
 final class MigrationArgumentParserTest extends TestCase
 {

@@ -15,11 +15,8 @@ use PHPUnit\Framework\TestCase;
 
 final class MigrationsTest extends TestCase
 {
-    /** @var ConfigFile */
-    private $configFile;
-
-    /** @var EnvironmentPreparator */
-    private $environmentPreparator;
+    private ConfigFile $configFile;
+    private EnvironmentPreparator $environmentPreparator;
 
     public function __construct()
     {

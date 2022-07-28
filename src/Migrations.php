@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\DoctrineMigrationWrapper;
 
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\Output;
 
 /**
@@ -80,25 +79,16 @@ class Migrations
 
     /**
      * Execute Doctrine Migration command for all needed Shop edition and project.
-     * If Doctrine returns an error code breaks and return it.
-     *
-     * @param string|null $command Doctrine Migration command to run.
-     * @param string|null $edition Possibility to run migration only against one edition.
-     * @param array $flags Doctrine Migration flags.
-     *
-     * @return int|string error code or error if one exist or 0 for success
      */
-    public function execute(?string $command, ?string $edition = null, array $flags = [])
+    public function execute(?string $command, ?string $edition = null, array $flags = []): int
     {
         $migrationPaths = $this->migrationsPathProvider->getMigrationsPath($edition);
         $this->validateFlags($flags);
 
-        foreach ($migrationPaths as $migrationEdition => $migrationPath) {
-            $doctrineApplication = $this->doctrineApplicationBuilder->build();
-
-            $input = $this->formDoctrineInput($command, $migrationPath, $this->dbFilePath, $flags);
-
+        foreach ($migrationPaths as $migrationPath) {
             if ($this->shouldRunCommand($command, $migrationPath)) {
+                $doctrineApplication = $this->doctrineApplicationBuilder->build();
+                $input = $this->formDoctrineInput($command, $migrationPath, $this->dbFilePath, $flags);
                 $errorCode = $doctrineApplication->run($input, $this->output);
                 if ($errorCode) {
                     return $errorCode;

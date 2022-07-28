@@ -10,16 +10,15 @@ declare(strict_types=1);
 namespace OxidEsales\DoctrineMigrationWrapper\Tests\Unit;
 
 use OxidEsales\DoctrineMigrationWrapper\DoctrineApplicationBuilder;
-use OxidEsales\DoctrineMigrationWrapper\MigrationArgumentParser;
 use OxidEsales\DoctrineMigrationWrapper\MigrationAvailabilityChecker;
 use OxidEsales\DoctrineMigrationWrapper\Migrations;
 use OxidEsales\DoctrineMigrationWrapper\MigrationsPathProvider;
 use OxidEsales\Facts\Facts;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Console\Application;
-use Prophecy\Argument;
 use Symfony\Component\Console\Input\ArrayInput;
 
 final class MigrationsTest extends TestCase
@@ -336,6 +335,7 @@ final class MigrationsTest extends TestCase
     public function testExecuteWithEmptyInputWillCallDefaultCommand(): void
     {
         $application = $this->prophesize(Application::class);
+        $application->run(Argument::type(ArrayInput::class), Argument::any())->willReturn(0);
         $applicationBuilder = $this->prophesize(DoctrineApplicationBuilder::class);
         $applicationBuilder->build()->willReturn($application);
         $migrationsPathProvider = $this->prophesize(MigrationsPathProvider::class);

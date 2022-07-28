@@ -24,10 +24,9 @@ class DoctrineApplicationBuilder
      *
      * @return Application
      */
-    public function build()
+    public function build(): Application
     {
-        $helperSet = new \Symfony\Component\Console\Helper\HelperSet();
-        $doctrineApplication = ConsoleRunner::createApplication($helperSet);
+        $doctrineApplication = ConsoleRunner::createApplication();
         $doctrineApplication->setAutoExit(false);
         $doctrineApplication->setCatchExceptions(false); // we handle the exception on our own!
 

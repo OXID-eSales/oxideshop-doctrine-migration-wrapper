@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/ ).
 
 ## [5.0.0] - Unreleased
 
+### Changed
+- Switched to `doctrine/migrations` v3
+
 ### Removed
 - PHP v7 support
 
