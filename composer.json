@@ -4,7 +4,7 @@
   "license": "GPL-3.0-only",
   "require": {
     "php": ">=8.0",
-    "doctrine/migrations": "^2.3.2",
+    "doctrine/migrations": "^3.0",
     "oxid-esales/oxideshop-facts": "*",
     "symfony/console": "*"
   },
@@ -12,7 +12,7 @@
     "ext-pdo": "*",
     "mikey179/vfsstream": "^1.6",
     "oxid-esales/oxideshop-ce": "dev-b-7.0.x",
-    "phpspec/prophecy-phpunit": "^v2.0.1",
+    "phpspec/prophecy-phpunit": "^v2.0",
     "phpunit/phpunit": "^9",
     "symfony/filesystem": "*",
     "symfony/yaml": "*"
