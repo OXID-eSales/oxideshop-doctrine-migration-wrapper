@@ -62,6 +62,27 @@ final class MigrationArgumentParserTest extends TestCase
                     'flags' => ['--write-sql' => '/var/www/html/source/migration/project_data/']
                 ]
             ],
+            [
+                [
+                    './vendor/bin/oe-eshop-db_migrate',
+                    'migrations:execute',
+                    'CE',
+                    'OxidEsales\EshopCommunity\Migrations\Version12345',
+                    'OxidEsales\EshopCommunity\Migrations\Version67890',
+                    '--up',
+                ],
+                [
+                    'command' => 'migrations:execute',
+                    'edition' => 'CE',
+                    'flags' => [
+                        '--up' => null,
+                        'versions' => [
+                            'OxidEsales\EshopCommunity\Migrations\Version12345',
+                            'OxidEsales\EshopCommunity\Migrations\Version67890',
+                        ],
+                    ],
+                ],
+            ],
         ];
     }
 

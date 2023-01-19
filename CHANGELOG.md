@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/ ).
 and this project adheres to [Semantic Versioning](http://semver.org/ ).
 
+## [5.0.1] - Unreleased
+
+### Fixed
+- Executing Doctrine commands with migration version argument
+
 ## [5.0.0] - 2022-10-06
 
 ### Changed
@@ -87,6 +92,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/ ).
 
 - No more illegal mix of collation errors if collation_server was configured to something else than utf8_general_ci. [Bug 6782](https://bugs.oxid-esales.com/view.php?id=6782)
 
+[5.0.1]: https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper/compare/v5.0.0...v5.0.1
+[5.0.0]: https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper/compare/v4.0.0...v5.0.0
 [4.0.0]: https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper/compare/v3.3.0...v4.0.0
 [3.3.0]: https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper/compare/v3.2.0...v3.3.0
 [3.2.0]: https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper/compare/v3.1.1...v3.2.0

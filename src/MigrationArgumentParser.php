@@ -36,8 +36,12 @@ class MigrationArgumentParser
                 $copyOfArgv[1],
                 $copyOfArgv[2]
             );
-
+            $versions = [];
             foreach ($copyOfArgv as $flag) {
+                if ($this->isVersionArgument((string)$flag)) {
+                    $versions[] = $flag;
+                    continue;
+                }
                 /*
                  * Determines if a param has also a value
                  * if case  : --write-sql=/var/www/html/source/migration/project_data/
@@ -50,6 +54,9 @@ class MigrationArgumentParser
                 } else {
                     $flags[$flag] = null;
                 }
+            }
+            if ($versions) {
+                $flags['versions'] = $versions;
             }
         }
         $this->flags = $flags;
@@ -68,5 +75,10 @@ class MigrationArgumentParser
     public function getFlags(): array
     {
         return $this->flags;
+    }
+
+    private function isVersionArgument(string $flag): bool
+    {
+        return !\str_starts_with($flag, '-');
     }
 }
