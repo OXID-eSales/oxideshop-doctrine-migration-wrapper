@@ -12,6 +12,7 @@ namespace OxidEsales\DoctrineMigrationWrapper\Tests\Integration;
 use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
 use OxidEsales\Facts\Config\ConfigFile;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Exception\CommandNotFoundException;
 
 final class MigrationsTest extends TestCase
 {
@@ -37,6 +38,24 @@ final class MigrationsTest extends TestCase
         parent::tearDown();
 
         $this->environmentPreparator->cleanEnvironment();
+    }
+
+    public function testExecuteWithUnknownCommandWillOutputAnError(): void
+    {
+        $this->expectException(CommandNotFoundException::class);
+
+        $migration = (new MigrationsBuilder())->build();
+
+        $migration->execute(uniqid('command-', true));
+    }
+
+    public function testExecuteWithEmptyCommandWillNotOutputAnError(): void
+    {
+        $migration = (new MigrationsBuilder())->build();
+
+        $result = $migration->execute('');
+
+        $this->assertEquals(0, $result);
     }
 
     /**

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\DoctrineMigrationWrapper;
 
 use Doctrine\Migrations\Exception\MigrationClassNotFound;
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\Output;
 
@@ -87,10 +88,14 @@ class Migrations
         $this->validateFlags($flags);
 
         foreach ($migrationPaths as $suite => $migrationPath) {
+            $suite = strtoupper($suite);
             if ($this->shouldRunCommand($command, $migrationPath)) {
                 $doctrineApplication = $this->doctrineApplicationBuilder->build();
                 $input = $this->formDoctrineInput($command, $migrationPath, $this->dbFilePath, $flags);
                 try {
+                    if ($command && $suite) {
+                        $this->addSuiteToCommandName($doctrineApplication, (string)$command, $suite);
+                    }
                     $errorCode = $doctrineApplication->run($input, $this->output);
                 } catch (MigrationClassNotFound $exception) {
                     throw new MigrationClassNotFound(
@@ -158,5 +163,11 @@ class Migrations
     {
         return ($command !== self::MIGRATE_COMMAND
             || $this->migrationAvailabilityChecker->migrationExists($migrationPath));
+    }
+
+    private function addSuiteToCommandName(Application $doctrineApplication, string $command, string $suite): void
+    {
+        $commandObject = $doctrineApplication->get($command);
+        $commandObject->setName($commandObject->getName() . " $suite");
     }
 }

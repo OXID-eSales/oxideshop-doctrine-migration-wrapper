@@ -20,6 +20,7 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 
 final class MigrationsTest extends TestCase
@@ -124,12 +125,14 @@ final class MigrationsTest extends TestCase
             'command' => $command
         ]);
 
-        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run', 'get']);
         $doctrineApplication->expects($this->exactly(3))->method('run')->withConsecutive(
             [$inputCE, null],
             [$inputPE, null],
             [$inputEE, null]
         );
+        $doctrineApplication->method('get')
+            ->willReturn($this->createMock(Command::class));
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
@@ -167,8 +170,10 @@ final class MigrationsTest extends TestCase
             'command' => $command
         ]);
 
-        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run', 'get']);
         $doctrineApplication->expects($this->once())->method('run')->with($inputEE);
+        $doctrineApplication->method('get')
+            ->willReturn($this->createMock(Command::class));
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
@@ -336,11 +341,15 @@ final class MigrationsTest extends TestCase
     public function testExecuteWithEmptyInputWillCallDefaultCommand(): void
     {
         $application = $this->prophesize(Application::class);
+        $consoleCommand = $this->prophesize(Command::class);
+        $consoleCommand->getName()->willReturn('command-name');
+        $consoleCommand->setName(Argument::any())->willReturn($consoleCommand);
+        $application->get(Argument::any())->willReturn($consoleCommand);
         $application->run(Argument::type(ArrayInput::class), Argument::any())->willReturn(0);
         $applicationBuilder = $this->prophesize(DoctrineApplicationBuilder::class);
         $applicationBuilder->build()->willReturn($application);
         $migrationsPathProvider = $this->prophesize(MigrationsPathProvider::class);
-        $migrationsPathProvider->getMigrationsPath(null)->willReturn(['something']);
+        $migrationsPathProvider->getMigrationsPath(null)->willReturn(['suite' => 'something-path']);
         $checker = $this->prophesize(MigrationAvailabilityChecker::class);
 
         (new Migrations(
@@ -378,8 +387,10 @@ final class MigrationsTest extends TestCase
         ];
         $inputEE = new ArrayInput(array_merge($inputEE, $flags));
 
-        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run', 'get']);
         $doctrineApplication->expects($this->once())->method('run')->with($inputEE);
+        $doctrineApplication->method('get')
+            ->willReturn($this->createMock(Command::class));
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
@@ -433,9 +444,15 @@ final class MigrationsTest extends TestCase
 
     public function testExecuteWithMissingMigrationClassWillRethrowMentioningSuiteInExceptionMessage(): void
     {
-        $editionId = 'some-edition';
+        $command = 'migrations:execute ABC';
+        $suite = 'some-edition';
+        $suiteFormatted = strtoupper($suite);
         $originalExceptionMessage = 'Some exception message.';
         $application = $this->prophesize(Application::class);
+        $consoleCommand = $this->prophesize(Command::class);
+        $consoleCommand->getName()->willReturn($command);
+        $consoleCommand->setName("$command $suiteFormatted")->willReturn($consoleCommand);
+        $application->get($command)->willReturn($consoleCommand);
         $application->run(Argument::type(ArrayInput::class), Argument::any())
             ->willThrow(
                 new MigrationClassNotFound($originalExceptionMessage)
@@ -444,12 +461,12 @@ final class MigrationsTest extends TestCase
         $applicationBuilder->build()->willReturn($application);
         $migrationsPathProvider = $this->prophesize(MigrationsPathProvider::class);
         $migrationsPathProvider->getMigrationsPath(null)->willReturn(
-            [$editionId => 'some-path-to-migration-config-file']
+            [$suite => 'some-path-to-migration-config-file']
         );
         $checker = $this->prophesize(MigrationAvailabilityChecker::class);
 
         $this->expectException(MigrationClassNotFound::class);
-        $this->expectExceptionMessageMatches("/$editionId/");
+        $this->expectExceptionMessageMatches("/$suite/");
         $this->expectExceptionMessageMatches("/$originalExceptionMessage/");
 
         (new Migrations(
@@ -458,7 +475,7 @@ final class MigrationsTest extends TestCase
             $checker->reveal(),
             $migrationsPathProvider->reveal()
         ))
-            ->execute('migrations:execute ABC');
+            ->execute($command);
     }
 
     public function badFlagsDataProvider(): array
@@ -482,14 +499,18 @@ final class MigrationsTest extends TestCase
      */
     private function getDoctrineMock($runsAtLeastOnce, $callWith = null): MockObject
     {
-        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run', 'get']);
 
-        if ($runsAtLeastOnce && is_null($callWith)) {
-            $doctrineApplication->expects($this->atLeastOnce())->method('run');
-        } elseif ($runsAtLeastOnce) {
+        if (!$runsAtLeastOnce) {
+            $doctrineApplication->expects($this->never())->method('run');
+            return $doctrineApplication;
+        }
+        $doctrineApplication->method('get')
+            ->willReturn($this->createMock(Command::class));
+        if ($callWith) {
             $doctrineApplication->expects($this->atLeastOnce())->method('run')->with($callWith);
         } else {
-            $doctrineApplication->expects($this->never())->method('run');
+            $doctrineApplication->expects($this->atLeastOnce())->method('run');
         }
 
         return $doctrineApplication;
@@ -501,8 +522,10 @@ final class MigrationsTest extends TestCase
      */
     private function getDoctrineStub($result = null): MockObject
     {
-        $doctrineApplication = $this->createPartialMock(Application::class, ['run']);
+        $doctrineApplication = $this->createPartialMock(Application::class, ['run', 'get']);
         $doctrineApplication->method('run')->willReturn($result ? 1 : 0);
+        $doctrineApplication->method('get')
+            ->willReturn($this->createMock(Command::class));
 
         return $doctrineApplication;
     }
