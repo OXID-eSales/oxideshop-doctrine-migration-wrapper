@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\DoctrineMigrationWrapper\Tests\Unit;
 
+use Doctrine\Migrations\Exception\MigrationClassNotFound;
 use OxidEsales\DoctrineMigrationWrapper\DoctrineApplicationBuilder;
 use OxidEsales\DoctrineMigrationWrapper\MigrationAvailabilityChecker;
 use OxidEsales\DoctrineMigrationWrapper\Migrations;
@@ -428,6 +429,36 @@ final class MigrationsTest extends TestCase
         $this->expectExceptionMessage($message);
 
         $migrations->execute($command, 'Ee', $flags);
+    }
+
+    public function testExecuteWithMissingMigrationClassWillRethrowMentioningSuiteInExceptionMessage(): void
+    {
+        $editionId = 'some-edition';
+        $originalExceptionMessage = 'Some exception message.';
+        $application = $this->prophesize(Application::class);
+        $application->run(Argument::type(ArrayInput::class), Argument::any())
+            ->willThrow(
+                new MigrationClassNotFound($originalExceptionMessage)
+            );
+        $applicationBuilder = $this->prophesize(DoctrineApplicationBuilder::class);
+        $applicationBuilder->build()->willReturn($application);
+        $migrationsPathProvider = $this->prophesize(MigrationsPathProvider::class);
+        $migrationsPathProvider->getMigrationsPath(null)->willReturn(
+            [$editionId => 'some-path-to-migration-config-file']
+        );
+        $checker = $this->prophesize(MigrationAvailabilityChecker::class);
+
+        $this->expectException(MigrationClassNotFound::class);
+        $this->expectExceptionMessageMatches("/$editionId/");
+        $this->expectExceptionMessageMatches("/$originalExceptionMessage/");
+
+        (new Migrations(
+            $applicationBuilder->reveal(),
+            'some-path-to-db-config-file',
+            $checker->reveal(),
+            $migrationsPathProvider->reveal()
+        ))
+            ->execute('migrations:execute ABC');
     }
 
     public function badFlagsDataProvider(): array
