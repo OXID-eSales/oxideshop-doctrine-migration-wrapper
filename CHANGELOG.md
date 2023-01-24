@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/ ).
 
 ### Fixed
 - Executing Doctrine commands with migration version argument
+- Doctrine Migrations help output is not compatible with the custom Suite_Type argument
 
 ## [5.0.0] - 2022-10-06
 

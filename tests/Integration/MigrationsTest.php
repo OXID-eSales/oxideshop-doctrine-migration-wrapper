@@ -92,4 +92,17 @@ final class MigrationsTest extends TestCase
         );
         $this->assertSame(1, $result->rowCount(), 'There must be one row for project migration');
     }
+
+    public function testExecuteWithMigrationsGenerateWillAddSuiteInfoToOutput(): void
+    {
+        $suiteCode = 'CE';
+        $migration = (new MigrationsBuilder())->build();
+        $output = new ConsoleOutputSpy();
+
+        $migration->setOutput($output);
+
+        $migration->execute('migrations:generate', $suiteCode);
+
+        $this->assertStringContainsString($suiteCode, $output->getWriteLnContents());
+    }
 }

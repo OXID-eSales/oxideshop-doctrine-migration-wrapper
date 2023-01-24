@@ -12,6 +12,7 @@ namespace OxidEsales\DoctrineMigrationWrapper;
 use Doctrine\Migrations\Exception\MigrationClassNotFound;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\Output;
 
 /**
@@ -84,6 +85,7 @@ class Migrations
      */
     public function execute(?string $command, ?string $edition = null, array $flags = []): int
     {
+        $command = (string)$command;
         $migrationPaths = $this->migrationsPathProvider->getMigrationsPath($edition);
         $this->validateFlags($flags);
 
@@ -94,9 +96,12 @@ class Migrations
                 $input = $this->formDoctrineInput($command, $migrationPath, $this->dbFilePath, $flags);
                 try {
                     if ($command && $suite) {
-                        $this->addSuiteToCommandName($doctrineApplication, (string)$command, $suite);
+                        $this->addSuiteToCommandName($doctrineApplication, $command, $suite);
                     }
                     $errorCode = $doctrineApplication->run($input, $this->output);
+                    if ($suite && $this->isMigrationsGenerateCommand($command)) {
+                        $this->appendSuiteInfoAfterHelpMessageOutput($suite);
+                    }
                 } catch (MigrationClassNotFound $exception) {
                     throw new MigrationClassNotFound(
                         "Error running migration for suite type '$suite': " .
@@ -115,14 +120,14 @@ class Migrations
     /**
      * Form input which is expected by Doctrine.
      *
-     * @param string|null $command command to run.
+     * @param string $command command to run.
      * @param string $migrationPath path to migration configuration file.
      * @param string $dbFilePath path to database configuration file.
      * @param array $flags flags for command
      *
      * @return ArrayInput
      */
-    private function formDoctrineInput(?string $command, string $migrationPath, string $dbFilePath, array $flags): ArrayInput
+    private function formDoctrineInput(string $command, string $migrationPath, string $dbFilePath, array $flags): ArrayInput
     {
         $formedInput = [
             $this->predefinedCommandKeys['configuration'] => $migrationPath,
@@ -159,7 +164,7 @@ class Migrations
      *
      * @return bool
      */
-    private function shouldRunCommand($command, $migrationPath)
+    private function shouldRunCommand(string $command, $migrationPath): bool
     {
         return ($command !== self::MIGRATE_COMMAND
             || $this->migrationAvailabilityChecker->migrationExists($migrationPath));
@@ -169,5 +174,17 @@ class Migrations
     {
         $commandObject = $doctrineApplication->get($command);
         $commandObject->setName($commandObject->getName() . " $suite");
+    }
+
+    private function isMigrationsGenerateCommand(string $command): bool
+    {
+        return $command === 'migrations:generate';
+    }
+
+    private function appendSuiteInfoAfterHelpMessageOutput(string $suite): void
+    {
+        ($this->output ?? new ConsoleOutput())->writeln(
+            " Don't forget to add the correct Suite_Type to the above commands <info>migrations:execute $suite [options] [--] <versions>...</info>\n"
+        );
     }
 }
