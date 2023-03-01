@@ -1,4 +1,0 @@
-table_storage:
-  'table_name': oxmigrations_project
-migrations_paths:
-  'OxidEsales\DoctrineMigrationWrapper\source\Migrations': project_data

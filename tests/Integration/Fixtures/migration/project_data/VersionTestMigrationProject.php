@@ -7,19 +7,13 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\DoctrineMigrationWrapper\source\Migrations;
+namespace OxidEsales\EshopCommunity\MigrationsProject;
 
 use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
-/**
- * Test migration to create data which could be used to check if Migrations actually works.
- */
-class Version20170530154643 extends AbstractMigration
+class VersionTestMigrationProject extends AbstractMigration
 {
-    /**
-     * @param Schema $schema
-     */
     public function up(Schema $schema): void
     {
         $this->addSql("INSERT INTO `test_doctrine_migration_wrapper` (`id`) VALUES ('project_migration');");
