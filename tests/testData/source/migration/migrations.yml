@@ -1,4 +1,0 @@
-table_storage:
-  'table_name': oxmigrations_ce
-migrations_paths:
-  'OxidEsales\DoctrineMigrationWrapper\source\Migrations': data

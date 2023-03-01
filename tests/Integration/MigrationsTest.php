@@ -10,35 +10,18 @@ declare(strict_types=1);
 namespace OxidEsales\DoctrineMigrationWrapper\Tests\Integration;
 
 use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
-use OxidEsales\Facts\Config\ConfigFile;
+use OxidEsales\Eshop\Core\DatabaseProvider;
+use OxidEsales\Facts\Facts;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 
 final class MigrationsTest extends TestCase
 {
-    private ConfigFile $configFile;
-    private EnvironmentPreparator $environmentPreparator;
-
-    public function __construct()
-    {
-        $this->environmentPreparator = new EnvironmentPreparator();
-        parent::__construct();
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->environmentPreparator->setupEnvironment();
-        $this->configFile = new ConfigFile();
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        $this->environmentPreparator->cleanEnvironment();
-    }
+    private string $ceMigrationClass = 'VersionTestMigrationCe';
+    private string $projectMigrationClass = 'VersionTestMigrationProject';
+    private string $tableCreatedByCeMigration = 'test_doctrine_migration_wrapper';
+    private string $entryAddedByCeMigration = 'ce_migration';
+    private string $entryAddedByProjectMigration = 'project_migration';
 
     public function testExecuteWithUnknownCommandWillOutputAnError(): void
     {
@@ -58,41 +41,33 @@ final class MigrationsTest extends TestCase
         $this->assertEquals(0, $result);
     }
 
-    /**
-     * Run migration for one edition and one project to test that they works.
-     * Tests that:
-     * - integration with Doctrine Migration actually works
-     * - it is possible to run two migrations in a row
-     * - Migration Builder actually works
-     */
     public function testMigrateSuccess(): void
     {
+        $db = DatabaseProvider::getDb();
+        $this->copyMigrationFixturesToShop();
         $migration = (new MigrationsBuilder())->build();
+
         $migration->execute('migrations:migrate');
 
-        $databaseName = $this->configFile->dbName;
-        $databaseConnection = new \PDO(
-            'mysql:host=' . $this->configFile->dbHost,
-            $this->configFile->dbUser,
-            $this->configFile->dbPwd
-        );
+        $totalEntriesCount = $db->select(
+            "SELECT * FROM `$this->tableCreatedByCeMigration`"
+        )
+            ->count();
+        $ceEntriesCount = $db->select(
+            "SELECT * FROM `$this->tableCreatedByCeMigration` WHERE `id` = '$this->entryAddedByCeMigration'"
+        )
+            ->count();
+        $projectEntriesCount = $db->select(
+            "SELECT * FROM `$this->tableCreatedByCeMigration` WHERE `id` = '$this->entryAddedByProjectMigration'"
+        )
+            ->count();
+        $this->assertEquals(2, $totalEntriesCount);
+        $this->assertEquals(1, $ceEntriesCount);
+        $this->assertEquals(1, $projectEntriesCount);
 
-        $result = $databaseConnection->query(
-            "SELECT id as entries FROM `$databaseName`.`test_doctrine_migration_wrapper`"
-        );
-        $this->assertSame(2, $result->rowCount(), 'There must be one row for shop migration and one for project.');
-
-        $result = $databaseConnection->query(
-            "SELECT 1 FROM `$databaseName`.`test_doctrine_migration_wrapper` WHERE id = 'shop_migration'"
-        );
-        $this->assertSame(1, $result->rowCount(), 'There must be one row for shop migration');
-
-        $result = $databaseConnection->query(
-            "SELECT 1 FROM `$databaseName`.`test_doctrine_migration_wrapper` WHERE id = 'project_migration'"
-        );
-        $this->assertSame(1, $result->rowCount(), 'There must be one row for project migration');
+        $this->removeMigrationFixturesFromShop();
+        $this->undoMigrationChangesInDatabase();
     }
-
     public function testExecuteWithMigrationsGenerateWillAddSuiteInfoToOutput(): void
     {
         $suiteCode = 'CE';
@@ -104,5 +79,31 @@ final class MigrationsTest extends TestCase
         $migration->execute('migrations:generate', $suiteCode);
 
         $this->assertStringContainsString($suiteCode, $output->getWriteLnContents());
+    }
+    private function copyMigrationFixturesToShop(): void
+    {
+        $shopSource = (new Facts())->getSourcePath();
+        copy(
+            __DIR__ . "/Fixtures/migration/data/$this->ceMigrationClass.php",
+            "$shopSource/migration/data/$this->ceMigrationClass.php"
+        );
+        copy(
+            __DIR__ . "/Fixtures/migration/project_data/$this->projectMigrationClass.php",
+            "$shopSource/migration/project_data/$this->projectMigrationClass.php"
+        );
+    }
+
+    private function removeMigrationFixturesFromShop(): void
+    {
+        $shopSource = (new Facts())->getSourcePath();
+        unlink("$shopSource/migration/data/$this->ceMigrationClass.php");
+        unlink("$shopSource/migration/project_data/$this->projectMigrationClass.php");
+    }
+
+    private function undoMigrationChangesInDatabase(): void
+    {
+        DatabaseProvider::getDb()->execute("DROP TABLE `$this->tableCreatedByCeMigration`");
+        DatabaseProvider::getDb()->execute("DELETE FROM `oxmigrations_ce` WHERE `version` LIKE '%$this->ceMigrationClass'");
+        DatabaseProvider::getDb()->execute("DELETE FROM `oxmigrations_project` WHERE `version` LIKE '%$this->projectMigrationClass'");
     }
 }
