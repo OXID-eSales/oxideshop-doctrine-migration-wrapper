@@ -1,0 +1,71 @@
+name: Development
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 9 * * 1'
+
+jobs:
+  run_tests:
+    env:
+      INSTALL_DIR: migration_wrapper
+    strategy:
+      matrix:
+        php: [ '8.1' ]
+        mysql: [ '8.0' ]
+      fail-fast: false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Docker Eshop SDK
+        run: git clone --depth 1 https://github.com/OXID-eSales/docker-eshop-sdk.git --branch master --single-branch .
+
+      - name: Clone Migration Wrapper (on default branch - ${{ github.event.repository.default_branch }})
+        run: git clone --branch ${{ github.ref_name }} https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper.git source/$INSTALL_DIR
+
+      - name: Prepare container configuration
+        run: |
+          make setup
+          make addbasicservices
+          perl -pi\
+              -e "s#PHP_VERSION=.*#PHP_VERSION='${{ matrix.php }}'#g;"\
+              -e "s#MYSQL_VERSION=.*#MYSQL_VERSION='${{ matrix.mysql }}'#g;"\
+              .env
+          perl -pi\
+              -e 's#display_errors =.*#display_errors = true#g;'\
+              -e 'print "xdebug.max_nesting_level=1000\n\n";'\
+              -e 'print "error_reporting = E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_WARNING\n"'\
+              containers/php/custom.ini
+          perl -pi\
+              -e 's#/var/www/#/var/www/$INSTALL_DIR/source/#g;'\
+              containers/httpd/project.conf
+
+      - name: Start containers
+        run: |
+          make up
+          sleep 2
+
+      - name: Install Composer dependencies (on default branch - ${{ github.event.repository.default_branch }})
+        run: |
+          docker-compose exec -T -w /var/www/$INSTALL_DIR php \
+            composer config allow-plugins.oxid-esales/oxideshop-unified-namespace-generator true
+          docker-compose exec -T -w /var/www/$INSTALL_DIR php \
+            composer config allow-plugins.oxid-esales/oxideshop-composer-plugin true
+          docker-compose exec -T -w /var/www/$INSTALL_DIR -e COMPOSER_ROOT_VERSION=dev-b-7.0.x php \
+            composer install --no-interaction
+
+      - name: Install Shop
+        run: |
+          docker-compose exec -T -w /var/www/$INSTALL_DIR php \
+            vendor/bin/oe-console oe:setup:shop --db-host mysql --db-port 3306 --db-name example --db-user root --db-password root --shop-url localhost.localhost --shop-directory /var/www/$INSTALL_DIR/source/ --compile-directory /var/www/$INSTALL_DIR/source/tmp/
+
+      - name: Run tests
+        run: |
+          docker-compose exec -T -e ACTIONS_RUNNER_DEBUG=true -w /var/www/$INSTALL_DIR php \
+            php vendor/bin/phpunit --testdox --debug -v --bootstrap /var/www/$INSTALL_DIR/source/bootstrap.php tests/
+
+      - name: Stop containers
+        run: |
+          docker-compose down
+          sleep 2
