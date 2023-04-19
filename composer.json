@@ -1,7 +1,7 @@
 {
   "name": "oxid-esales/oxideshop-doctrine-migration-wrapper",
   "description": "OXID eShop database migrations using doctrine",
-  "license": "GPL-3.0-only",
+  "license": "proprietary",
   "require": {
     "php": ">=8.0",
     "doctrine/migrations": "^3.0",
