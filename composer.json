@@ -11,7 +11,7 @@
   "require-dev": {
     "ext-pdo": "*",
     "mikey179/vfsstream": "^1.6",
-    "oxid-esales/oxideshop-ce": "dev-b-7.0.x",
+    "oxid-esales/oxideshop-ce": "^7.0.0",
     "phpspec/prophecy-phpunit": "^v2.0",
     "phpunit/phpunit": "^9",
     "symfony/filesystem": "*",
