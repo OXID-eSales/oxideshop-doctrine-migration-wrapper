@@ -52,7 +52,7 @@ jobs:
             composer config allow-plugins.oxid-esales/oxideshop-unified-namespace-generator true
           docker-compose exec -T -w /var/www/$INSTALL_DIR php \
             composer config allow-plugins.oxid-esales/oxideshop-composer-plugin true
-          docker-compose exec -T -w /var/www/$INSTALL_DIR -e COMPOSER_ROOT_VERSION=dev-b-7.0.x php \
+          docker-compose exec -T -w /var/www/$INSTALL_DIR -e COMPOSER_ROOT_VERSION=dev-b-8.0.x php \
             composer install --no-interaction
 
       - name: Install Shop
