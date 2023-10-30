@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 
 final class MigrationArgumentParserTest extends TestCase
 {
-    public function provideArgumentData(): array
+    public static function provideArgumentData(): array
     {
         return [
             [

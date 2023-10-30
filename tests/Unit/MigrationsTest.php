@@ -27,10 +27,6 @@ final class MigrationsTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * Check if Doctrine Application mock is called
-     * when migrations are available.
-     */
     public function testCallsDoctrineMigrations(): void
     {
         $doctrineApplication = $this->getDoctrineMock(true);
@@ -52,10 +48,6 @@ final class MigrationsTest extends TestCase
         $this->assertSame(0, $migrations->execute('migrations:migrate'));
     }
 
-    /**
-     * Check if Doctrine Application mock is called with right parameters
-     * when migrations are available.
-     */
     public function testExecuteCEMigration(): void
     {
         $command = 'migrations:migrate';
@@ -87,10 +79,6 @@ final class MigrationsTest extends TestCase
         $migrations->execute($command);
     }
 
-    /**
-     * Tests that all migrations are called what's defined in a Shop facts
-     * with an order from Facts.
-     */
     public function testExecuteAllMigrations(): void
     {
         $command = 'migrations:migrate';
@@ -126,11 +114,23 @@ final class MigrationsTest extends TestCase
         ]);
 
         $doctrineApplication = $this->createPartialMock(Application::class, ['run', 'get']);
-        $doctrineApplication->expects($this->exactly(3))->method('run')->withConsecutive(
-            [$inputCE, null],
-            [$inputPE, null],
-            [$inputEE, null]
-        );
+
+        $doctrineApplication
+            ->expects($this->exactly(3))
+            ->method('run')
+            ->with(
+                $this->callback(function ($argument) use ($inputCE, $inputPE, $inputEE) {
+                    static $count = 0;
+                    $count++;
+                    return match ($count) {
+                        1 => $argument == $inputCE,
+                        2 => $argument == $inputPE,
+                        3 => $argument == $inputEE,
+                        default => false,
+                    };
+                })
+            );
+
         $doctrineApplication->method('get')
             ->willReturn($this->createMock(Command::class));
 
@@ -150,10 +150,6 @@ final class MigrationsTest extends TestCase
         $migrations->execute($command);
     }
 
-    /**
-     * Tests that only requested migration is called even when more migrations exist.
-     * Does testing by calling migration in different case sensitivity.
-     */
     public function testExecuteOnlyRequestedMigration(): void
     {
         $command = 'migrations:migrate';
@@ -191,9 +187,6 @@ final class MigrationsTest extends TestCase
         $migrations->execute($command, 'Ee');
     }
 
-    /**
-     * Tests that no error appears when no migrations exist for requested edition.
-     */
     public function testNoErrorWhenNoMigrationExistForRequestedEdition(): void
     {
         $command = 'migrations:migrate';
@@ -223,10 +216,6 @@ final class MigrationsTest extends TestCase
         $migrations->execute($command, 'PR');
     }
 
-    /**
-     * Check if Doctrine Application mock is NOT called
-     * when migrations are NOT available.
-     */
     public function testSkipMigrationWhenItDoesNotExist(): void
     {
         $command = 'migrations:migrate';
@@ -251,9 +240,6 @@ final class MigrationsTest extends TestCase
         $migrations->execute($command);
     }
 
-    /**
-     * Check if migrations availability checker is called with a right parameter.
-     */
     public function testMigrationAvailabilityCheckerCalledWithCorrectPath(): void
     {
         $command = 'migrations:migrate';
@@ -284,9 +270,6 @@ final class MigrationsTest extends TestCase
         $migrations->execute($command);
     }
 
-    /**
-     * Check if generates new migration when no migration exist in a folder.
-     */
     public function testRunGenerateMigrationCommandEvenIfNoMigrationExist(): void
     {
         $command = 'migrations:generate';
@@ -311,9 +294,6 @@ final class MigrationsTest extends TestCase
         $migrations->execute($command);
     }
 
-    /**
-     * Test to check if error code is passed from Doctrine to upper caller.
-     */
     public function testReturnErrorCodeWhenMigrationFail(): void
     {
         $errorCode = 1;
@@ -478,7 +458,7 @@ final class MigrationsTest extends TestCase
             ->execute($command);
     }
 
-    public function badFlagsDataProvider(): array
+    public static function badFlagsDataProvider(): array
     {
         return [
             [
@@ -492,11 +472,7 @@ final class MigrationsTest extends TestCase
         ];
     }
 
-    /**
-     * @param $runsAtLeastOnce
-     * @param null $callWith
-     * @return MockObject|Application
-     */
+
     private function getDoctrineMock($runsAtLeastOnce, $callWith = null): MockObject
     {
         $doctrineApplication = $this->createPartialMock(Application::class, ['run', 'get']);
@@ -516,10 +492,6 @@ final class MigrationsTest extends TestCase
         return $doctrineApplication;
     }
 
-    /**
-     * @param int $result
-     * @return MockObject|Application
-     */
     private function getDoctrineStub($result = null): MockObject
     {
         $doctrineApplication = $this->createPartialMock(Application::class, ['run', 'get']);
@@ -530,10 +502,6 @@ final class MigrationsTest extends TestCase
         return $doctrineApplication;
     }
 
-    /**
-     * @param $doctrineApplication
-     * @return MockObject|DoctrineApplicationBuilder
-     */
     private function getDoctrineApplicationBuilderStub($doctrineApplication): MockObject
     {
         $doctrineApplicationBuilder = $this->createPartialMock(DoctrineApplicationBuilder::class, ['build']);
@@ -542,14 +510,10 @@ final class MigrationsTest extends TestCase
         return $doctrineApplicationBuilder;
     }
 
-    /**
-     * @param $migrationPaths
-     * @return MockObject|Facts
-     */
     private function getMigrationsPathProviderStub($migrationPaths): MockObject
     {
         $migrationsPathProvider = $this->getMockBuilder(MigrationsPathProvider::class)
-            ->setMethods(['getMigrationsPath'])
+            ->onlyMethods(['getMigrationsPath'])
             ->setConstructorArgs([new Facts()])
             ->getMock();
 
@@ -558,10 +522,6 @@ final class MigrationsTest extends TestCase
         return $migrationsPathProvider;
     }
 
-    /**
-     * @param $ifMigrationsAvailable
-     * @return MockObject
-     */
     private function getMigrationAvailabilityStub($ifMigrationsAvailable): MockObject
     {
         $migrationAvailabilityChecker = $this->createPartialMock(

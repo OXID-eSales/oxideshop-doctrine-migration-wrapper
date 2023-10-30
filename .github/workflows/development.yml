@@ -22,7 +22,7 @@ jobs:
         run: git clone --depth 1 https://github.com/OXID-eSales/docker-eshop-sdk.git --branch master --single-branch .
 
       - name: Clone Migration Wrapper (on default branch - ${{ github.event.repository.default_branch }})
-        run: git clone --branch ${{ github.ref_name }} https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper.git source/$INSTALL_DIR
+        run: git clone --branch b-7.1.x-odmw-phpunit10-OXDEV-7518 https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper.git source/$INSTALL_DIR
 
       - name: Prepare container configuration
         run: |
@@ -52,7 +52,7 @@ jobs:
             composer config allow-plugins.oxid-esales/oxideshop-unified-namespace-generator true
           docker-compose exec -T -w /var/www/$INSTALL_DIR php \
             composer config allow-plugins.oxid-esales/oxideshop-composer-plugin true
-          docker-compose exec -T -w /var/www/$INSTALL_DIR -e COMPOSER_ROOT_VERSION=dev-b-7.0.x php \
+          docker-compose exec -T -w /var/www/$INSTALL_DIR -e COMPOSER_ROOT_VERSION=dev-b-7.1.x-odmw-phpunit10-OXDEV-7518 php \
             composer install --no-interaction
 
       - name: Install Shop
@@ -63,7 +63,7 @@ jobs:
       - name: Run tests
         run: |
           docker-compose exec -T -e ACTIONS_RUNNER_DEBUG=true -w /var/www/$INSTALL_DIR php \
-            php vendor/bin/phpunit --testdox --debug -v --bootstrap /var/www/$INSTALL_DIR/source/bootstrap.php tests/
+            php vendor/bin/phpunit --bootstrap /var/www/$INSTALL_DIR/source/bootstrap.php tests/
 
       - name: Stop containers
         run: |
