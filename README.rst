@@ -6,15 +6,6 @@ OXID eShop doctrine migration integration
 
 Document: https://docs.oxid-esales.com/developer/en/6.2/development/modules_components_themes/module/database_migration/index.html
 
-Branch Compatibility
---------------------
-
-* master branch is compatible with OXID eShop compilation master
-* b-6.4.x branch is compatible with OXID eShop compilation 6.4.x
-* b-6.3.x branch is compatible with OXID eShop compilation 6.3.x
-* b-3.x branch is compatible with OXID eShop compilation 6.2.x
-* b-1.x branch is compatible with OXID eShop compilations before 6.2.x
-
 Description
 -----------
 

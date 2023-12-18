@@ -68,6 +68,7 @@ final class MigrationsTest extends TestCase
         $this->removeMigrationFixturesFromShop();
         $this->undoMigrationChangesInDatabase();
     }
+
     public function testExecuteWithMigrationsGenerateWillAddSuiteInfoToOutput(): void
     {
         $suiteCode = 'CE';
@@ -80,6 +81,7 @@ final class MigrationsTest extends TestCase
 
         $this->assertStringContainsString($suiteCode, $output->getWriteLnContents());
     }
+
     private function copyMigrationFixturesToShop(): void
     {
         $shopSource = (new Facts())->getSourcePath();
