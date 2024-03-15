@@ -1,6 +1,6 @@
 # Change Log for OXID eShop doctrine migration integration
 
-## v5.1.0 - unreleased
+## v5.2.0 - 2024-03-15
 
 ### Added
 - PHPUnit v10 support
