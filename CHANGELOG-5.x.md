@@ -1,4 +1,4 @@
-# Change Log for OXID eShop doctrine migration integration
+# Change Log for OXID eShop Doctrine Migration Wrapper
 
 ## v5.4.0 - Unreleased
 
@@ -19,7 +19,10 @@
 - PHPUnit v10 support
 
 ### Removed
-- PHPUnit v9 support
+- PHP v8.0 support
+
+### Changed
+- DB connection parameters don't depend on `Facts`
 
 ## v5.1.0 - 2023-04-20
 

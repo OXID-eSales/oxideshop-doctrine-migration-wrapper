@@ -1,6 +1,15 @@
 <?php
 
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
+declare(strict_types=1);
+
 namespace OxidEsales\DoctrineMigrationWrapper;
+
+use function str_starts_with;
 
 class MigrationArgumentParser
 {
@@ -19,7 +28,7 @@ class MigrationArgumentParser
 
         $edition = $argv[2] ?? null;
         // Just in case the second argument is a flag and edition is not set
-        if (isset($edition) && substr($edition, 0, 1) === '-') {
+        if (isset($edition) && str_starts_with($edition, '-')) {
             array_splice($argv, 3, 0, $edition);
             $argv[2] = null;
             $edition = null;
@@ -47,7 +56,7 @@ class MigrationArgumentParser
                  * if case  : --write-sql=/var/www/html/source/migration/project_data/
                  * else case: --dry-run
                  */
-                $keyValuePair = preg_split('/=/', $flag);
+                $keyValuePair = explode('=', $flag);
 
                 if (count($keyValuePair) === 2) {
                     $flags[$keyValuePair[0]] = $keyValuePair[1];
@@ -79,6 +88,6 @@ class MigrationArgumentParser
 
     private function isVersionArgument(string $flag): bool
     {
-        return !\str_starts_with($flag, '-');
+        return !str_starts_with($flag, '-');
     }
 }

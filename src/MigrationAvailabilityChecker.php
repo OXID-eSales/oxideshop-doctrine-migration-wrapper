@@ -45,7 +45,7 @@ class MigrationAvailabilityChecker
      */
     private function getPathToMigrations($pathToConfiguration)
     {
-        $pathToMigrationsRootDirectory = dirname($pathToConfiguration);
+        $pathToMigrationsRootDirectory = \dirname($pathToConfiguration);
 
         $pathToMigrationsDirectory = $pathToMigrationsRootDirectory . DIRECTORY_SEPARATOR . 'data';
         if (strpos($pathToConfiguration, 'project_migrations')) {

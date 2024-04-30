@@ -39,7 +39,7 @@ class MigrationsPathProvider implements MigrationsPathProviderInterface
     {
         $allMigrationPaths = array_merge($this->getShopEditionsPath(), $this->getModulesPath());
 
-        if (is_null($edition)) {
+        if ($edition === null) {
             return $allMigrationPaths;
         }
 
