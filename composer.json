@@ -1,9 +1,9 @@
 {
   "name": "oxid-esales/oxideshop-doctrine-migration-wrapper",
-  "description": "OXID eShop database migrations using doctrine",
+  "description": "OXID eShop database migrations using Doctrine",
   "license": "proprietary",
   "require": {
-    "php": ">=8.0",
+    "php": ">=8.1",
     "doctrine/migrations": "^3.0",
     "oxid-esales/oxideshop-facts": "*",
     "symfony/console": "*"
@@ -12,7 +12,7 @@
     "ext-pdo": "*",
     "mikey179/vfsstream": "^1.6",
     "oxid-esales/oxideshop-ce": "dev-b-8.0.x",
-    "phpspec/prophecy-phpunit": "^v2.0",
+    "phpspec/prophecy-phpunit": "^2.0",
     "phpunit/phpunit": "^10.4",
     "symfony/filesystem": "*",
     "symfony/yaml": "*"

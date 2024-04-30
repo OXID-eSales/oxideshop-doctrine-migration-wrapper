@@ -32,7 +32,7 @@ class Migrations
     private $dbFilePath;
 
     /** Command for doctrine to run database migrations. */
-    const MIGRATE_COMMAND = 'migrations:migrate';
+    public const MIGRATE_COMMAND = 'migrations:migrate';
 
     private const STATUS_COMMAND = 'migrations:status';
 
