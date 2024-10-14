@@ -1,6 +1,6 @@
 # Change Log for OXID eShop doctrine migration integration
 
-## v5.3.0 - Unreleased
+## v5.3.0 - 2024-10-14
 
 ### Removed
 - PHP v8.1 support

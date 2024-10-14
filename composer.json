@@ -17,8 +17,7 @@
     "symfony/filesystem": "*",
     "symfony/yaml": "*"
   },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
+  "minimum-stability": "stable",
   "autoload": {
     "psr-4": {
       "OxidEsales\\DoctrineMigrationWrapper\\": "./src"
