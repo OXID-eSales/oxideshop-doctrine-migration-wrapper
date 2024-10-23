@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\DoctrineMigrationWrapper\Tests\Unit;
 
 use OxidEsales\DoctrineMigrationWrapper\MigrationArgumentParser;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class MigrationArgumentParserTest extends TestCase
@@ -86,9 +87,7 @@ final class MigrationArgumentParserTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideArgumentData
-     */
+    #[DataProvider('provideArgumentData')]
     public function testArgumentPreparation(array $arguments, array $expected): void
     {
         $argumentParser = new MigrationArgumentParser($arguments);

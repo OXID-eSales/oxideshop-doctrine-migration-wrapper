@@ -15,6 +15,7 @@ use OxidEsales\DoctrineMigrationWrapper\MigrationAvailabilityChecker;
 use OxidEsales\DoctrineMigrationWrapper\Migrations;
 use OxidEsales\DoctrineMigrationWrapper\MigrationsPathProvider;
 use OxidEsales\Facts\Facts;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -388,10 +389,8 @@ final class MigrationsTest extends TestCase
         $migrations->execute($command, 'Ee', $flags);
     }
 
-    /**
-     * @dataProvider badFlagsDataProvider
-     */
-    public function testRaiseErrorExecuteMigrationWithInvalidNFlag($message, $flags): void
+    #[DataProvider('badFlagsDataProvider')]
+    public function testRaiseErrorExecuteMigrationWithInvalidNFlag(string $message, array $flags): void
     {
         $command = 'migrations:migrate';
         $dbConfigFilePath = 'path_to_DB_config_file';
