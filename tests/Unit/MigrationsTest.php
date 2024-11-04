@@ -14,7 +14,6 @@ use OxidEsales\DoctrineMigrationWrapper\DoctrineApplicationBuilder;
 use OxidEsales\DoctrineMigrationWrapper\MigrationAvailabilityChecker;
 use OxidEsales\DoctrineMigrationWrapper\Migrations;
 use OxidEsales\DoctrineMigrationWrapper\MigrationsPathProvider;
-use OxidEsales\Facts\Facts;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -513,7 +512,6 @@ final class MigrationsTest extends TestCase
     {
         $migrationsPathProvider = $this->getMockBuilder(MigrationsPathProvider::class)
             ->onlyMethods(['getMigrationsPath'])
-            ->setConstructorArgs([new Facts()])
             ->getMock();
 
         $migrationsPathProvider->method('getMigrationsPath')->willReturn($migrationPaths);

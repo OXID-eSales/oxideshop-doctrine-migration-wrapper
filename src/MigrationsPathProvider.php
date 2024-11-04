@@ -10,34 +10,31 @@ declare(strict_types=1);
 namespace OxidEsales\DoctrineMigrationWrapper;
 
 use OxidEsales\EshopCommunity\Internal\Container\BootstrapContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Edition;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Dao\ProjectConfigurationDaoInterface;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\DataObject\ShopConfiguration;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
-use OxidEsales\Facts\Facts;
 use Symfony\Component\Filesystem\Path;
 
-class MigrationsPathProvider implements MigrationsPathProviderInterface
+readonly class MigrationsPathProvider implements MigrationsPathProviderInterface
 {
-    /**
-     * @var Facts
-     */
-    private $facts;
+    private BasicContextInterface $context;
+    private ShopConfiguration $shopConfiguration;
+    private string $defaultFilename;
 
-    /**
-     * @param Facts $facts
-     */
-    public function __construct(Facts $facts)
+    public function __construct()
     {
-        $this->facts = $facts;
+        $this->defaultFilename = 'migrations.yml';
+        $this->context = BootstrapContainerFactory::getBootstrapContainer()->get(BasicContextInterface::class);
+        $this->shopConfiguration = BootstrapContainerFactory::getBootstrapContainer()
+            ->get(ProjectConfigurationDaoInterface::class)
+            ->getConfiguration()
+            ->getShopConfiguration($this->context->getDefaultShopId());
     }
 
-    /**
-     * @param null $edition
-     *
-     * @return array
-     */
     public function getMigrationsPath($edition = null): array
     {
-        $allMigrationPaths = array_merge($this->getShopEditionsPath(), $this->getModulesPath());
+        $allMigrationPaths = array_merge($this->getShopPaths(), $this->getModulesPath());
 
         if ($edition === null) {
             return $allMigrationPaths;
@@ -54,44 +51,54 @@ class MigrationsPathProvider implements MigrationsPathProviderInterface
         return $migrationPaths;
     }
 
-    /**
-     * @return array
-     */
-    private function getShopEditionsPath(): array
+    private function getShopPaths(): array
     {
-        return $this->facts->getMigrationPaths();
+        $paths = [
+            'ce' => $this->getMigrationFilePath($this->context->getSourcePath(), $this->defaultFilename),
+        ];
+        if (!$this->context->getEdition()->isCommunityEdition()) {
+            $paths['pe'] = $this->getMigrationFilePath(
+                $this->context->getEditionSourcePath(Edition::Professional),
+                $this->defaultFilename
+            );
+        }
+        if ($this->context->getEdition() === Edition::Enterprise) {
+            $paths['ee'] = $this->getMigrationFilePath(
+                $this->context->getEditionSourcePath(Edition::Enterprise),
+                $this->defaultFilename
+            );
+        }
+        $paths['pr'] = $this->getMigrationFilePath(
+            $this->context->getSourcePath(),
+            'project_migrations.yml'
+        );
+
+        return $paths;
     }
 
-    /**
-     * @return array
-     */
     private function getModulesPath(): array
     {
-        $moduleMigrationPaths = [];
-
-        $bootstrapContainer = BootstrapContainerFactory::getBootstrapContainer();
-
-        $projectConfigurationDao = $bootstrapContainer
-            ->get(ProjectConfigurationDaoInterface::class);
-
-        $basicContext = $bootstrapContainer
-            ->get(BasicContextInterface::class);
-
-        $shopConfigurationDao = $projectConfigurationDao
-            ->getConfiguration()
-            ->getShopConfiguration($basicContext->getDefaultShopId());
-
-        foreach ($shopConfigurationDao->getModuleConfigurations() as $moduleConfiguration) {
-            $migrationConfigurationPath = Path::join(
-                $basicContext->getShopRootPath(),
+        $paths = [];
+        foreach ($this->shopConfiguration->getModuleConfigurations() as $moduleConfiguration) {
+            $moduleSource = Path::join(
+                $this->context->getShopRootPath(),
                 $moduleConfiguration->getModuleSource(),
-                '/migration/migrations.yml'
             );
+            $migrationConfigurationPath = $this->getMigrationFilePath($moduleSource, $this->defaultFilename);
             if (file_exists($migrationConfigurationPath)) {
-                $moduleMigrationPaths[$moduleConfiguration->getId()] = $migrationConfigurationPath;
+                $paths[$moduleConfiguration->getId()] = $migrationConfigurationPath;
             }
         }
 
-        return $moduleMigrationPaths;
+        return $paths;
+    }
+
+    private function getMigrationFilePath(string $sourcePath, $filename): string
+    {
+        return Path::join(
+            $sourcePath,
+            'migration',
+            $filename,
+        );
     }
 }

@@ -9,29 +9,17 @@ declare(strict_types=1);
 
 namespace OxidEsales\DoctrineMigrationWrapper;
 
-use OxidEsales\Facts\Facts;
+use Symfony\Component\Filesystem\Path;
 
 class MigrationsBuilder
 {
-    public function build(Facts $facts = null): Migrations
+    public function build(): Migrations
     {
-        $doctrineApplicationBuilder = new DoctrineApplicationBuilder();
-
-        if (!$facts) {
-            $facts = new Facts();
-        }
-
-        $dbFilePath = __DIR__ . DIRECTORY_SEPARATOR . 'migrations-db.php' ;
-
-        $migrationAvailabilityChecker = new MigrationAvailabilityChecker();
-
-        $migrationsPathProvider = new MigrationsPathProvider($facts);
-
         return new Migrations(
-            $doctrineApplicationBuilder,
-            $dbFilePath,
-            $migrationAvailabilityChecker,
-            $migrationsPathProvider
+            new DoctrineApplicationBuilder(),
+            Path::join(__DIR__, 'migrations-db.php'),
+            new MigrationAvailabilityChecker(),
+            new MigrationsPathProvider()
         );
     }
 }

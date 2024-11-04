@@ -11,12 +11,15 @@ namespace OxidEsales\DoctrineMigrationWrapper\Tests\Integration;
 
 use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
 use OxidEsales\Eshop\Core\DatabaseProvider;
-use OxidEsales\Facts\Facts;
+use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
+use OxidEsales\EshopCommunity\Tests\ContainerTrait;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 
 final class MigrationsTest extends TestCase
 {
+    use ContainerTrait;
+
     private string $ceMigrationClass = 'VersionTestMigrationCe';
     private string $projectMigrationClass = 'VersionTestMigrationProject';
     private string $tableCreatedByCeMigration = 'test_doctrine_migration_wrapper';
@@ -84,7 +87,7 @@ final class MigrationsTest extends TestCase
 
     private function copyMigrationFixturesToShop(): void
     {
-        $shopSource = (new Facts())->getSourcePath();
+        $shopSource = $this->get(BasicContextInterface::class)->getSourcePath();
         copy(
             __DIR__ . "/Fixtures/migration/data/$this->ceMigrationClass.php",
             "$shopSource/migration/data/$this->ceMigrationClass.php"
@@ -97,7 +100,7 @@ final class MigrationsTest extends TestCase
 
     private function removeMigrationFixturesFromShop(): void
     {
-        $shopSource = (new Facts())->getSourcePath();
+        $shopSource = $this->get(BasicContextInterface::class)->getSourcePath();
         unlink("$shopSource/migration/data/$this->ceMigrationClass.php");
         unlink("$shopSource/migration/project_data/$this->projectMigrationClass.php");
     }
