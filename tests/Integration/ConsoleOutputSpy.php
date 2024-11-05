@@ -15,7 +15,7 @@ final class ConsoleOutputSpy extends ConsoleOutput
 {
     private string $writeLnContents = '';
 
-    public function writeln($messages, int $options = self::OUTPUT_NORMAL)
+    public function writeln($messages, int $options = self::OUTPUT_NORMAL): void
     {
         parent::writeln($messages, $options);
 

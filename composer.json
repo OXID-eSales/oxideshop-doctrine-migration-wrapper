@@ -3,18 +3,7 @@
   "description": "OXID eShop database migrations using Doctrine",
   "license": "proprietary",
   "require": {
-    "php": ">=8.2",
-    "doctrine/migrations": "^3.0",
-    "symfony/console": "*"
-  },
-  "require-dev": {
-    "ext-pdo": "*",
-    "mikey179/vfsstream": "^1.6",
-    "oxid-esales/oxideshop-ce": "*",
-    "phpspec/prophecy-phpunit": "^2.0",
-    "phpunit/phpunit": "^11.4",
-    "symfony/filesystem": "*",
-    "symfony/yaml": "*"
+    "doctrine/migrations": "^3.0"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,

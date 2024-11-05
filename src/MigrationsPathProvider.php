@@ -10,17 +10,17 @@ declare(strict_types=1);
 namespace OxidEsales\DoctrineMigrationWrapper;
 
 use OxidEsales\EshopCommunity\Internal\Container\BootstrapContainerFactory;
-use OxidEsales\EshopCommunity\Internal\Framework\Edition;
+use OxidEsales\EshopCommunity\Internal\Framework\Edition\Edition;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Dao\ProjectConfigurationDaoInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\DataObject\ShopConfiguration;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 use Symfony\Component\Filesystem\Path;
 
-readonly class MigrationsPathProvider implements MigrationsPathProviderInterface
+class MigrationsPathProvider implements MigrationsPathProviderInterface
 {
-    private BasicContextInterface $context;
-    private ShopConfiguration $shopConfiguration;
-    private string $defaultFilename;
+    private readonly BasicContextInterface $context;
+    private readonly ShopConfiguration $shopConfiguration;
+    private readonly string $defaultFilename;
 
     public function __construct()
     {

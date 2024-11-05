@@ -17,7 +17,31 @@ Run the following command to install:
 ```bash
 composer require oxid-esales/oxideshop-doctrine-migration-wrapper```
 ```
-    
+
+## Development
+
+### Running tests
+
+Component tests can be executed with the OXID eShop's PHPUnit runner:
+```bash
+vendor/bin/phpunit vendor/oxid-esales/oxideshop-doctrine-migration-wrapper
+```
+
+you might need to extend the eShop's root composer `autoload-dev` configuration and run `dump-autoload` command:
+
+```json filename="composer.json"
+    "autoload-dev": {
+        "psr-4": {
+            "OxidEsales\\DoctrineMigrationWrapper\\Tests\\": "./vendor/oxid-esales/oxideshop-doctrine-migration-wrapper/tests"
+        }
+    }
+```
+
+```bash
+composer dump-autoload
+```
+to activate autoloading for the component's test classes.
+
 ## Bugs and Issues
 
 If you experience any bugs or issues, please report them in the section **OXID eShop (all versions)** of 
