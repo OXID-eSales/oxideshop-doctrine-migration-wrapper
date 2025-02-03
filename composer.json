@@ -1,24 +1,24 @@
 {
-  "name": "oxid-esales/oxideshop-doctrine-migration-wrapper",
-  "description": "OXID eShop database migrations using Doctrine",
-  "license": "proprietary",
-  "require": {
-    "doctrine/migrations": "^3.0"
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "autoload": {
-    "psr-4": {
-      "OxidEsales\\DoctrineMigrationWrapper\\": "./src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "OxidEsales\\DoctrineMigrationWrapper\\Tests\\": "./tests"
-    }
-  },
-  "bin": [
-    "./bin/oe-eshop-db_migrate",
-    "./bin/oe-eshop-doctrine_migration"
-  ]
+    "name": "oxid-esales/oxideshop-doctrine-migration-wrapper",
+    "description": "OXID eShop database migrations using Doctrine",
+    "license": "proprietary",
+    "require": {
+        "doctrine/migrations": "^3.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "OxidEsales\\DoctrineMigrationWrapper\\": "./src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "OxidEsales\\DoctrineMigrationWrapper\\Tests\\": "./tests"
+        }
+    },
+    "bin": [
+        "./bin/oe-eshop-db_migrate",
+        "./bin/oe-eshop-doctrine_migration"
+    ]
 }
