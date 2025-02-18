@@ -73,9 +73,9 @@ class Migrations
     }
 
     /**
-     * @param Output $output Add a possibility to provide a custom output handler
+     * @param Output|null $output Add a possibility to provide a custom output handler
      */
-    public function setOutput(Output $output = null)
+    public function setOutput(?Output $output = null)
     {
         $this->output = $output;
     }
