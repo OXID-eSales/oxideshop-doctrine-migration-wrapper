@@ -9,6 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\DoctrineMigrationWrapper;
 
-return [
-    'url' => getenv('OXID_DB_URL'),
-];
+use OxidEsales\EshopCommunity\Internal\Framework\Database\Configuration\DataObject\DatabaseConfiguration;
+
+return (new DatabaseConfiguration(getenv('OXID_DB_URL')))->getConnectionParameters();
