@@ -1,36 +1,36 @@
 {
-  "name": "oxid-esales/oxideshop-doctrine-migration-wrapper",
-  "description": "OXID eShop database migrations using doctrine",
-  "license": "proprietary",
-  "require": {
-    "php": ">=8.2",
-    "doctrine/migrations": "^3.0",
-    "oxid-esales/oxideshop-facts": "*",
-    "symfony/console": "*"
-  },
-  "require-dev": {
-    "ext-pdo": "*",
-    "mikey179/vfsstream": "^1.6",
-    "oxid-esales/oxideshop-ce": "*",
-    "phpspec/prophecy-phpunit": "^v2.0",
-    "phpunit/phpunit": "^10.4",
-    "symfony/filesystem": "*",
-    "symfony/yaml": "*"
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "autoload": {
-    "psr-4": {
-      "OxidEsales\\DoctrineMigrationWrapper\\": "./src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "OxidEsales\\DoctrineMigrationWrapper\\Tests\\": "./tests"
-    }
-  },
-  "bin": [
-    "./bin/oe-eshop-db_migrate",
-    "./bin/oe-eshop-doctrine_migration"
-  ]
+    "name": "oxid-esales/oxideshop-doctrine-migration-wrapper",
+    "description": "OXID eShop database migrations using doctrine",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.2",
+        "doctrine/migrations": "^3.0",
+        "oxid-esales/oxideshop-facts": "*",
+        "symfony/console": "*"
+    },
+    "require-dev": {
+        "ext-pdo": "*",
+        "mikey179/vfsstream": "^1.6",
+        "oxid-esales/oxideshop-ce": "*",
+        "phpspec/prophecy-phpunit": "^v2.0",
+        "phpunit/phpunit": "^11.4",
+        "symfony/filesystem": "*",
+        "symfony/yaml": "*"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "OxidEsales\\DoctrineMigrationWrapper\\": "./src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "OxidEsales\\DoctrineMigrationWrapper\\Tests\\": "./tests"
+        }
+    },
+    "bin": [
+        "./bin/oe-eshop-db_migrate",
+        "./bin/oe-eshop-doctrine_migration"
+    ]
 }
