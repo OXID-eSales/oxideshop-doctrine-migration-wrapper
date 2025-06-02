@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\DoctrineMigrationWrapper;
 
+use OxidEsales\EshopCommunity\Internal\Framework\Env\DotenvLoader;
+use OxidEsales\EshopCommunity\Internal\Framework\FileSystem\ProjectRootLocator;
+
 $autoloadFileExist = false;
 $autoloadFiles = [
     __DIR__ . '/vendor/autoload.php',
@@ -29,6 +32,8 @@ foreach ($autoloadFiles as $autoloadFile) {
 if (!$autoloadFileExist) {
     exit('Autoload file was not found!');
 }
+
+(new DotenvLoader((new ProjectRootLocator())->getProjectRoot()))->loadEnvironmentVariables();
 
 $migrationsBuilder = new \OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder();
 $migrations = $migrationsBuilder->build();
