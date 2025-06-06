@@ -11,7 +11,7 @@ namespace OxidEsales\DoctrineMigrationWrapper;
 
 use OxidEsales\EshopCommunity\Internal\Container\BootstrapContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Edition\Edition;
-use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Dao\ProjectConfigurationDaoInterface;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Dao\ShopConfigurationDaoInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\DataObject\ShopConfiguration;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 use Symfony\Component\Filesystem\Path;
@@ -27,9 +27,8 @@ class MigrationsPathProvider implements MigrationsPathProviderInterface
         $this->defaultFilename = 'migrations.yml';
         $this->context = BootstrapContainerFactory::getBootstrapContainer()->get(BasicContextInterface::class);
         $this->shopConfiguration = BootstrapContainerFactory::getBootstrapContainer()
-            ->get(ProjectConfigurationDaoInterface::class)
-            ->getConfiguration()
-            ->getShopConfiguration($this->context->getDefaultShopId());
+            ->get(ShopConfigurationDaoInterface::class)
+            ->get($this->context->getDefaultShopId());
     }
 
     public function getMigrationsPath($edition = null): array
