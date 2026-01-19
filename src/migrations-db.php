@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\DoctrineMigrationWrapper;
 
+use OxidEsales\Eshop\Core\Database\Adapter\Doctrine\Database;
 use OxidEsales\Facts\Facts;
 
 $facts = new Facts();
@@ -22,6 +23,6 @@ return [
     'driver' => $facts->getDatabaseDriver(),
     'charset' => 'utf8',
     'driverOptions' => [
-        \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET @@SESSION.sql_mode=\'\''
+        Database::MYSQL_ATTR_INIT_COMMAND => 'SET @@SESSION.sql_mode=\'\''
     ]
 ];

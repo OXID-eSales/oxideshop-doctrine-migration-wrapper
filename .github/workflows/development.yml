@@ -13,8 +13,8 @@ jobs:
       INSTALL_DIR: migration_wrapper
     strategy:
       matrix:
-        php: [ '8.1' ]
-        mysql: [ '8.0' ]
+        php: [ '8.3', '8.4', '8.5' ]
+        mysql: [ '8.0', '8.4' ]
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
@@ -48,24 +48,24 @@ jobs:
 
       - name: Install Composer dependencies (on default branch - ${{ github.event.repository.default_branch }})
         run: |
-          docker-compose exec -T -w /var/www/$INSTALL_DIR php \
+          docker compose exec -T -w /var/www/$INSTALL_DIR php \
             composer config allow-plugins.oxid-esales/oxideshop-unified-namespace-generator true
-          docker-compose exec -T -w /var/www/$INSTALL_DIR php \
+          docker compose exec -T -w /var/www/$INSTALL_DIR php \
             composer config allow-plugins.oxid-esales/oxideshop-composer-plugin true
-          docker-compose exec -T -w /var/www/$INSTALL_DIR php \
+          docker compose exec -T -w /var/www/$INSTALL_DIR php \
             composer install --no-interaction
 
       - name: Install Shop
         run: |
-          docker-compose exec -T -w /var/www/$INSTALL_DIR php \
+          docker compose exec -T -w /var/www/$INSTALL_DIR php \
             vendor/bin/oe-console oe:setup:shop --db-host mysql --db-port 3306 --db-name example --db-user root --db-password root --shop-url localhost.localhost --shop-directory /var/www/$INSTALL_DIR/source/ --compile-directory /var/www/$INSTALL_DIR/source/tmp/
 
       - name: Run tests
         run: |
-          docker-compose exec -T -e ACTIONS_RUNNER_DEBUG=true -w /var/www/$INSTALL_DIR php \
+          docker compose exec -T -e ACTIONS_RUNNER_DEBUG=true -w /var/www/$INSTALL_DIR php \
             php vendor/bin/phpunit --bootstrap /var/www/$INSTALL_DIR/source/bootstrap.php tests/
 
       - name: Stop containers
         run: |
-          docker-compose down
+          docker compose down
           sleep 2

@@ -13,7 +13,7 @@ use OxidEsales\Facts\Facts;
 
 class MigrationsBuilder
 {
-    public function build(Facts $facts = null): Migrations
+    public function build(?Facts $facts = null): Migrations
     {
         $doctrineApplicationBuilder = new DoctrineApplicationBuilder();
 
