@@ -5,7 +5,7 @@
     "require": {
         "doctrine/migrations": "^3.0"
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "alpha",
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
