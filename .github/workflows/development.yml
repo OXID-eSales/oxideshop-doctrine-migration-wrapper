@@ -4,25 +4,27 @@ on:
   push:
   pull_request:
   workflow_dispatch:
-  schedule:
-    - cron: '0 9 * * 1'
+    inputs:
+      shop_branch:
+        description: 'Branch of oxideshop-ce to use'
+        required: false
 
 jobs:
   run_tests:
     env:
-      INSTALL_DIR: migration_wrapper
+      SHOP_BRANCH: ${{ inputs.shop_branch || 'b-8.0.x' }}
     strategy:
       matrix:
-        php: [ '8.3', '8.4', '8.5' ]
+        php: [ '8.4', '8.5' ]
         mysql: [ '8.0', '8.4' ]
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
-      - name: Clone Docker Eshop SDK
+      - name: Clone testing environment
         run: git clone --depth 1 https://github.com/OXID-eSales/docker-eshop-sdk.git --branch master --single-branch .
 
-      - name: Clone Migration Wrapper (on default branch - ${{ github.event.repository.default_branch }})
-        run: git clone --branch ${{ github.ref_name }} https://github.com/OXID-eSales/oxideshop-doctrine-migration-wrapper.git source/$INSTALL_DIR
+      - name: Clone the shop
+        run: git clone --depth 1 https://github.com/OXID-eSales/oxideshop_ce.git --branch ${{ env.SHOP_BRANCH }} --single-branch source
 
       - name: Prepare container configuration
         run: |
@@ -33,12 +35,7 @@ jobs:
               -e "s#MYSQL_VERSION=.*#MYSQL_VERSION='${{ matrix.mysql }}'#g;"\
               .env
           perl -pi\
-              -e 's#display_errors =.*#display_errors = true#g;'\
-              -e 'print "xdebug.max_nesting_level=1000\n\n";'\
-              -e 'print "error_reporting = E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_WARNING\n"'\
-              containers/php/custom.ini
-          perl -pi\
-              -e 's#/var/www/#/var/www/$INSTALL_DIR/source/#g;'\
+              -e 's#/var/www/#/var/www/source/#g;'\
               containers/httpd/project.conf
 
       - name: Start containers
@@ -46,26 +43,26 @@ jobs:
           make up
           sleep 2
 
-      - name: Install Composer dependencies (on default branch - ${{ github.event.repository.default_branch }})
+      - name: Install shop and component
         run: |
-          docker compose exec -T -w /var/www/$INSTALL_DIR php \
-            composer config allow-plugins.oxid-esales/oxideshop-unified-namespace-generator true
-          docker compose exec -T -w /var/www/$INSTALL_DIR php \
-            composer config allow-plugins.oxid-esales/oxideshop-composer-plugin true
-          docker compose exec -T -w /var/www/$INSTALL_DIR php \
-            composer install --no-interaction
+          docker compose exec -T php composer config preferred-install.oxid-esales/* source
+          docker compose exec -T php composer require oxid-esales/oxideshop-doctrine-migration-wrapper:dev-${{ github.ref_name }} --prefer-source --no-interaction
+          cd source && sed -i 's|"OxidEsales\\\\EshopCommunity\\\\Tests\\\\|"OxidEsales\\\\DoctrineMigrationWrapper\\\\Tests\\\\": "vendor/oxid-esales/oxideshop-doctrine-migration-wrapper/tests",\n        "OxidEsales\\\\EshopCommunity\\\\Tests\\\\|' composer.json
+          docker compose exec -T php composer dump-autoload
 
-      - name: Install Shop
-        run: |
-          docker compose exec -T -w /var/www/$INSTALL_DIR php \
-            vendor/bin/oe-console oe:setup:shop --db-host mysql --db-port 3306 --db-name example --db-user root --db-password root --shop-url localhost.localhost --shop-directory /var/www/$INSTALL_DIR/source/ --compile-directory /var/www/$INSTALL_DIR/source/tmp/
+      - name: Reset shop
+        run: docker compose exec -T php php bin/oe-console oe:database:reset --force
 
       - name: Run tests
         run: |
-          docker compose exec -T -e ACTIONS_RUNNER_DEBUG=true -w /var/www/$INSTALL_DIR php \
-            php vendor/bin/phpunit --bootstrap /var/www/$INSTALL_DIR/source/bootstrap.php tests/
+          docker compose exec -T php php vendor/bin/phpunit vendor/oxid-esales/oxideshop-doctrine-migration-wrapper/tests --bootstrap=/var/www/source/bootstrap.php | tee PHP${{ matrix.php }}_MYSQL${{ matrix.mysql }}_phpunit_log.txt 2>&1 || true
+          if grep -q -Ei 'fail|\\.\\=\\=|Warning|Notice|Deprecated|Fatal|Error' PHP${{ matrix.php }}_MYSQL${{ matrix.mysql }}_phpunit_log.txt; then exit 1; fi
 
-      - name: Stop containers
-        run: |
-          docker compose down
-          sleep 2
+      - name: Upload PHPUnit Log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phpunit-logs-PHP${{ matrix.php }}-MYSQL${{ matrix.mysql }}
+          path: PHP${{ matrix.php }}_MYSQL${{ matrix.mysql }}_phpunit_log.txt
+          if-no-files-found: error
+          retention-days: 7
