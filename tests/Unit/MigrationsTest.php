@@ -132,7 +132,7 @@ final class MigrationsTest extends TestCase
             );
 
         $doctrineApplication->method('get')
-            ->willReturn($this->createMock(Command::class));
+            ->willReturn($this->createStub(Command::class));
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
@@ -169,7 +169,7 @@ final class MigrationsTest extends TestCase
         $doctrineApplication = $this->createPartialMock(Application::class, ['run', 'get']);
         $doctrineApplication->expects($this->once())->method('run')->with($inputEE);
         $doctrineApplication->method('get')
-            ->willReturn($this->createMock(Command::class));
+            ->willReturn($this->createStub(Command::class));
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
@@ -370,7 +370,7 @@ final class MigrationsTest extends TestCase
         $doctrineApplication = $this->createPartialMock(Application::class, ['run', 'get']);
         $doctrineApplication->expects($this->once())->method('run')->with($inputEE);
         $doctrineApplication->method('get')
-            ->willReturn($this->createMock(Command::class));
+            ->willReturn($this->createStub(Command::class));
 
         $doctrineApplicationBuilder = $this->getDoctrineApplicationBuilderStub($doctrineApplication);
 
@@ -480,7 +480,7 @@ final class MigrationsTest extends TestCase
             return $doctrineApplication;
         }
         $doctrineApplication->method('get')
-            ->willReturn($this->createMock(Command::class));
+            ->willReturn($this->createStub(Command::class));
         if ($callWith) {
             $doctrineApplication->expects($this->atLeastOnce())->method('run')->with($callWith);
         } else {
@@ -490,42 +490,43 @@ final class MigrationsTest extends TestCase
         return $doctrineApplication;
     }
 
-    private function getDoctrineStub($result = null): MockObject
+    private function getDoctrineStub($result = null): Application
     {
-        $doctrineApplication = $this->createPartialMock(Application::class, ['run', 'get']);
+        $doctrineApplication = $this->createStub(Application::class);
         $doctrineApplication->method('run')->willReturn($result ? 1 : 0);
         $doctrineApplication->method('get')
-            ->willReturn($this->createMock(Command::class));
+            ->willReturn($this->createStub(Command::class));
 
         return $doctrineApplication;
     }
 
-    private function getDoctrineApplicationBuilderStub($doctrineApplication): MockObject
+    private function getDoctrineApplicationBuilderStub($doctrineApplication): DoctrineApplicationBuilder
     {
-        $doctrineApplicationBuilder = $this->createPartialMock(DoctrineApplicationBuilder::class, ['build']);
-        $doctrineApplicationBuilder->method('build')->willReturn($doctrineApplication);
+        $doctrineApplicationBuilder = $this->createStub(DoctrineApplicationBuilder::class);
+        $doctrineApplicationBuilder
+            ->method('build')
+            ->willReturn($doctrineApplication);
 
         return $doctrineApplicationBuilder;
     }
 
-    private function getMigrationsPathProviderStub($migrationPaths): MockObject
+    private function getMigrationsPathProviderStub($migrationPaths): MigrationsPathProvider
     {
-        $migrationsPathProvider = $this->getMockBuilder(MigrationsPathProvider::class)
-            ->onlyMethods(['getMigrationsPath'])
-            ->getMock();
+        $migrationsPathProvider = $this->createStub(MigrationsPathProvider::class);
 
-        $migrationsPathProvider->method('getMigrationsPath')->willReturn($migrationPaths);
+        $migrationsPathProvider
+            ->method('getMigrationsPath')
+            ->willReturn($migrationPaths);
 
         return $migrationsPathProvider;
     }
 
-    private function getMigrationAvailabilityStub($ifMigrationsAvailable): MockObject
+    private function getMigrationAvailabilityStub($ifMigrationsAvailable): MigrationAvailabilityChecker
     {
-        $migrationAvailabilityChecker = $this->createPartialMock(
-            MigrationAvailabilityChecker::class,
-            ['migrationExists']
-        );
-        $migrationAvailabilityChecker->method('migrationExists')->willReturn($ifMigrationsAvailable);
+        $migrationAvailabilityChecker = $this->createStub(MigrationAvailabilityChecker::class);
+        $migrationAvailabilityChecker
+            ->method('migrationExists')
+            ->willReturn($ifMigrationsAvailable);
 
         return $migrationAvailabilityChecker;
     }
