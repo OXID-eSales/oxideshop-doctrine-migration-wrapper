@@ -12,7 +12,7 @@ on:
 jobs:
   run_tests:
     env:
-      SHOP_BRANCH: ${{ inputs.shop_branch || 'b-7.5.x' }}
+      SHOP_BRANCH: ${{ inputs.shop_branch || 'b-7.6.x' }}
     strategy:
       matrix:
         php: [ '8.3', '8.4', '8.5' ]
@@ -74,7 +74,7 @@ jobs:
 
       - name: Upload PHPUnit Log
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: phpunit-logs-PHP${{ matrix.php }}-MYSQL${{ matrix.mysql }}
           path: PHP${{ matrix.php }}_MYSQL${{ matrix.mysql }}_phpunit_log.txt
