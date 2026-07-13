@@ -9,8 +9,11 @@ declare(strict_types=1);
 
 namespace OxidEsales\DoctrineMigrationWrapper;
 
+use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
 use OxidEsales\EshopCommunity\Internal\Framework\Env\DotenvLoader;
 use OxidEsales\EshopCommunity\Internal\Framework\FileSystem\ProjectRootLocator;
+use OxidEsales\EshopCommunity\Internal\Framework\Migration\TaggedMigrationExecutor;
+use Symfony\Component\Filesystem\Path;
 
 $autoloadFileExist = false;
 $autoloadFiles = [
@@ -33,10 +36,23 @@ if (!$autoloadFileExist) {
     exit('Autoload file was not found!');
 }
 
-(new DotenvLoader((new ProjectRootLocator())->getProjectRoot()))->loadEnvironmentVariables();
+$projectRoot = (new ProjectRootLocator())->getProjectRoot();
+(new DotenvLoader($projectRoot))->loadEnvironmentVariables();
 
 $migrationsBuilder = new \OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder();
 $migrations = $migrationsBuilder->build();
 
 $argumentParser = new MigrationArgumentParser($argv);
-exit($migrations->execute($argumentParser->getCommand(), $argumentParser->getEdition(), $argumentParser->getFlags()));
+$exitCode = $migrations->execute($argumentParser->getCommand(), $argumentParser->getEdition(), $argumentParser->getFlags());
+
+if (
+    $exitCode === 0
+    && $argumentParser->getCommand() === Migrations::MIGRATE_COMMAND
+    && $argumentParser->getEdition() === null
+) {
+    require_once Path::join($projectRoot, 'source', 'bootstrap.php');
+    $exitCode = ContainerFacade::get(TaggedMigrationExecutor::class)
+        ->executeWithOptions($argumentParser->getFlags());
+}
+
+exit($exitCode);

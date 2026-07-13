@@ -11,8 +11,10 @@ namespace OxidEsales\DoctrineMigrationWrapper;
 
 use Symfony\Component\Filesystem\Path;
 
+/** @deprecated use the OXID eShop console command `oe:database:migrate` instead */
 class MigrationsBuilder
 {
+    /** @deprecated use the OXID eShop console command `oe:database:migrate` instead */
     public function build(): Migrations
     {
         return new Migrations(

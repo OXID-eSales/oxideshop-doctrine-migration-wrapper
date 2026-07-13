@@ -3,7 +3,8 @@
     "description": "OXID eShop database migrations using Doctrine",
     "license": "proprietary",
     "require": {
-        "doctrine/migrations": "^3.0"
+        "doctrine/migrations": "^3.0",
+        "symfony/filesystem": "*"
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
