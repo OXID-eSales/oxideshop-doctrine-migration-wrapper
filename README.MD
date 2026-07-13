@@ -1,5 +1,12 @@
 # OXID eShop doctrine migration integration
 
+> **Deprecated:** This package is deprecated and will be removed in a future OXID eShop release.
+> Use the OXID eShop console command to run database migrations instead:
+>
+> ```bash
+> vendor/bin/oe-console oe:database:migrate
+> ```
+
 Documentation: https://docs.oxid-esales.com/developer/en/latest/development/modules_components_themes/module/database_migration/index.html
 
 ## Description

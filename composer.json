@@ -6,13 +6,13 @@
         "php": ">=8.3",
         "doctrine/migrations": "^3.0",
         "oxid-esales/oxideshop-facts": "*",
-        "symfony/console": "*"
+        "symfony/console": "*",
+        "symfony/filesystem": "*"
     },
     "require-dev": {
         "ext-pdo": "*",
         "mikey179/vfsstream": "^1.6",
         "phpspec/prophecy-phpunit": "^v2.0",
-        "symfony/filesystem": "*",
         "symfony/yaml": "*"
     },
     "minimum-stability": "stable",

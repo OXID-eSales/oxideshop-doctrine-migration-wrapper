@@ -11,8 +11,10 @@ namespace OxidEsales\DoctrineMigrationWrapper;
 
 use OxidEsales\Facts\Facts;
 
+/** @deprecated use the OXID eShop console command `oe:database:migrate` instead */
 class MigrationsBuilder
 {
+    /** @deprecated use the OXID eShop console command `oe:database:migrate` instead */
     public function build(?Facts $facts = null): Migrations
     {
         $doctrineApplicationBuilder = new DoctrineApplicationBuilder();

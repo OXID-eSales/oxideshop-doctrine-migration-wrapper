@@ -19,6 +19,8 @@ use Symfony\Component\Console\Output\Output;
  * Class to run Doctrine Migration commands.
  * OXID eShop might have several migrations to run for different edition and project.
  * This class ensures that all needed migrations run.
+ *
+ * @deprecated use the OXID eShop console command `oe:database:migrate` instead
  */
 class Migrations
 {
@@ -82,6 +84,8 @@ class Migrations
 
     /**
      * Execute Doctrine Migration command for all needed Shop edition and project.
+     *
+     * @deprecated use the OXID eShop console command `oe:database:migrate` instead
      */
     public function execute(?string $command, ?string $edition = null, array $flags = []): int
     {
