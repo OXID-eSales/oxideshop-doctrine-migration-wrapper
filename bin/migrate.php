@@ -12,6 +12,7 @@ namespace OxidEsales\DoctrineMigrationWrapper;
 use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
 use OxidEsales\EshopCommunity\Internal\Framework\FileSystem\ProjectRootLocator;
 use OxidEsales\EshopCommunity\Internal\Framework\Migration\TaggedMigrationExecutor;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Filesystem\Path;
 
 $autoloadFileExist = false;
@@ -34,6 +35,11 @@ foreach ($autoloadFiles as $autoloadFile) {
 if (!$autoloadFileExist) {
     exit('Autoload file was not found!');
 }
+
+(new ConsoleOutput())->getErrorOutput()->writeln([
+    '<comment>DEPRECATED: This script will be removed in a future OXID eShop release.</comment>',
+    '<comment>Use `vendor/bin/oe-console oe:database:migrate` instead.</comment>',
+]);
 
 $migrationsBuilder = new \OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder();
 $migrations = $migrationsBuilder->build();
