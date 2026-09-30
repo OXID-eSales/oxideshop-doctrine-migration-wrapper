@@ -10,3 +10,6 @@
 - The whole package in favour of the OXID eShop console command `oe:database:migrate`
 - `Migrations`
 - `MigrationsBuilder`
+
+### Removed
+- PHP v8.3 support
