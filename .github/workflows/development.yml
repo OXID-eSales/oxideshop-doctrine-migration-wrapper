@@ -15,7 +15,7 @@ jobs:
       SHOP_BRANCH: ${{ inputs.shop_branch || 'b-7.6.x' }}
     strategy:
       matrix:
-        php: [ '8.3', '8.4', '8.5' ]
+        php: [ '8.4', '8.5' ]
         mysql: [ '8.0', '8.4' ]
       fail-fast: false
     runs-on: ubuntu-latest
