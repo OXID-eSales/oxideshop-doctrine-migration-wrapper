@@ -12,7 +12,7 @@ on:
 jobs:
   run_tests:
     env:
-      SHOP_BRANCH: ${{ inputs.shop_branch || 'b-8.0.x' }}
+      SHOP_BRANCH: ${{ inputs.shop_branch || 'b-8.0.x-php-unit-13-OXDEV-10592' }}
     strategy:
       matrix:
         php: [ '8.4', '8.5' ]
