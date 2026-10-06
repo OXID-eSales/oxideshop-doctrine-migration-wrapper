@@ -1,6 +1,6 @@
 # Change Log for OXID eShop doctrine migration integration
 
-## v6.0.0 - Unreleased
+## v6.0.0 - 2026-10-06
 
 ### Changed
 - `oe-eshop-db_migrate migrations:migrate` also executes migrations registered via the DI container
