@@ -12,5 +12,9 @@
 - `Migrations`
 - `MigrationsBuilder`
 
+### Fixed
+- `migrations:generate` creates the missing migrations directory (`data` / `project_data`) instead of failing
+- `migrations:migrate` no longer fails with a `TypeError` if the migrations directory does not exist
+
 ## v8.0.0-alpha.2 - 2026-02-12
 *Compilation release*

@@ -66,6 +66,10 @@ class MigrationAvailabilityChecker
      */
     private function atLeastOneMigrationFileExist($pathToMigrationsDirectory)
     {
+        if (!is_dir($pathToMigrationsDirectory)) {
+            return false;
+        }
+
         $notMigrationFiles = [
             '.',
             '..'
@@ -78,5 +82,30 @@ class MigrationAvailabilityChecker
         $atLeastOneMigrationExist = count(scandir($pathToMigrationsDirectory)) > count($notMigrationFiles);
 
         return $atLeastOneMigrationExist;
+    }
+
+    /**
+     * Check if directory data exists by using the Configuration-File-Path
+     * If the directory does not exist it gets created
+     *
+     * @param string $pathToConfiguration
+     *
+     * @return void
+     */
+    public function ensureMigrationsDirectoryExists($pathToConfiguration): void
+    {
+        if (!is_file($pathToConfiguration)) {
+            return;
+        }
+
+        $directory = $this->getPathToMigrations($pathToConfiguration);
+
+        if (is_dir($directory)) {
+            return;
+        }
+
+        if (!mkdir($directory, 0755, true) && !is_dir($directory)) {
+            throw new \RuntimeException(sprintf('Directory "%s" could not be created', $directory));
+        }
     }
 }

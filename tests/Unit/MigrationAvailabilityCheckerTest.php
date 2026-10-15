@@ -75,4 +75,42 @@ final class MigrationAvailabilityCheckerTest extends TestCase
         $availabilityChecker = new MigrationAvailabilityChecker();
         $this->assertFalse($availabilityChecker->migrationExists($pathToMigrationConfigurationFile));
     }
+
+    public function testReturnFalseWhenMigrationsDirectoryDoesNotExist(): void
+    {
+        vfsStream::setup('root', 777, ['migration' => ['migrations.yml' => 'configuration for migrations']]);
+        $pathToMigrationConfigurationFile = vfsStream::url('root/migration/migrations.yml');
+
+        $availabilityChecker = new MigrationAvailabilityChecker();
+        $this->assertFalse($availabilityChecker->migrationExists($pathToMigrationConfigurationFile));
+    }
+
+    public function testEnsureMigrationsDirectoryExistsCreatesMissingDirectories(): void
+    {
+        $structure = [
+            'migration' => [
+                'migrations.yml' => 'configuration for migrations',
+                'project_migrations.yml' => 'configuration for migrations  - project',
+            ]
+        ];
+
+        vfsStream::setup('root', 777, $structure);
+
+        $availabilityChecker = new MigrationAvailabilityChecker();
+        $availabilityChecker->ensureMigrationsDirectoryExists(vfsStream::url('root/migration/migrations.yml'));
+        $availabilityChecker->ensureMigrationsDirectoryExists(vfsStream::url('root/migration/project_migrations.yml'));
+
+        $this->assertDirectoryExists(vfsStream::url('root/migration/data'));
+        $this->assertDirectoryExists(vfsStream::url('root/migration/project_data'));
+    }
+
+    public function testEnsureMigrationsDirectoryExistsSkipsMissingConfigurationFile(): void
+    {
+        vfsStream::setup('root', 777, ['migration' => []]);
+
+        (new MigrationAvailabilityChecker())
+            ->ensureMigrationsDirectoryExists(vfsStream::url('root/migration/migrations.yml'));
+
+        $this->assertDirectoryDoesNotExist(vfsStream::url('root/migration/data'));
+    }
 }

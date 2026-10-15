@@ -95,6 +95,11 @@ class Migrations
 
         foreach ($migrationPaths as $suite => $migrationPath) {
             $suite = strtoupper($suite);
+
+            if ($this->isMigrationsGenerateCommand($command)) {
+                $this->migrationAvailabilityChecker->ensureMigrationsDirectoryExists($migrationPath);
+            }
+
             if ($this->shouldRunCommand($command, $migrationPath)) {
                 $doctrineApplication = $this->doctrineApplicationBuilder->build();
                 $input = $this->formDoctrineInput($command, $migrationPath, $this->dbFilePath, $flags);
